@@ -1,0 +1,120 @@
+DesktopBase {
+    layers: one two three four;
+    background: rgb(44, 0, 30);
+    layout: grid;
+    grid-rows: 1fr 9fr;
+    grid-columns: 1fr 9fr;
+    width: 1fr;
+    height: 1fr;
+    layer: one;
+}
+
+#dash {
+    layout: grid;
+    grid-size: 0 6;
+    background: rgb(94, 39, 80);
+    opacity: 0.0;
+    height: 1fr;
+    width: 8;
+    dock: left;
+    layer: one;
+
+.dashapp {
+
+   border: solid rgba(233, 84, 32, 0.2);
+   layer: two;
+   opacity: 100.0;
+}
+}
+#topbar {
+    layout: vertical;
+    align: center top;
+    background: rgba(119, 33, 111, 100);
+    height: 3;
+    width: 1fr;
+    dock: top;
+    layer: one;
+}
+
+#clock {
+    offset-y: 1;
+    background: rgba(119, 33, 111, 100);   
+    color: rgb(17, 17, 17);
+    text-style: bold;
+    dock: top;
+    layer: one;
+    content-align: center top;
+}
+
+
+
+DashScreen {
+    background: rgba(191, 189, 183, 0.08);
+    align: center middle;
+    layout: grid;
+    grid-size: 3 3;
+    layer: one;
+}
+
+.box {
+    height: 1fr;
+    width: 1fr;
+    border: solid rgba(233, 84, 32, 0.2);
+    layer: one;
+
+
+}
+
+
+SettingsScreen {
+    layers: one two three four;
+    layout: grid;
+    grid-size: 3 3;
+    background: rgb(136, 138, 133);
+    height: 3fr;
+    width: 3fr;
+
+
+
+#topbarsettings {
+    layout: vertical;
+    align: center top;
+    background: rgba(119, 33, 111, 100);
+    height: 3;
+    width: 1fr;
+    dock: top;
+    layer: one;
+}
+
+#clocksettings {
+    offset-y: 1;
+    background: rgba(119, 33, 111, 100);
+    color: rgb(17, 17, 17);
+    text-style: bold;
+    dock: top;
+    layer: one;
+    content-align: center top;
+}
+
+#sidebar {
+   offset-y: 3;
+   height: 2fr;
+   width: 20;
+   dock: left;
+   background: rgb(255, 255, 255);
+   layer: one;
+}
+
+
+
+SettingButton {
+   height: 4;
+   width: 1fr;
+   color: rgb(191, 189, 183);
+   background: rgba(255, 87, 34, 0.5);
+   layer: one;
+   border: round black;
+}
+
+
+}
