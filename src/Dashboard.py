@@ -6,14 +6,53 @@ from textual.geometry import Region
 from textual.screen import Screen, ModalScreen
 from textual import on, events, work
 from datetime import datetime
+from rich.segment import Segment
+from rich.style import Style
+from textual.strip import Strip
+
 
 
 
 class SettingsApp(Static):
+    def render_line(self, y: int) -> Strip:
+        """Render a line of the settings icon."""
+        settings_icon = [
+            "  ⚙⚙⚙  ",
+            " ⚙⚙⚙⚙⚙ ",
+            "⚙⚙⚙⚙⚙⚙⚙",
+            " ⚙⚙⚙⚙⚙ ",
+            "  ⚙⚙⚙  ",
+            "Settings"
+        ]
+
+        if y >= len(settings_icon):
+            return Strip.blank(self.size.width)
+
+        line = settings_icon[y]
+        segment = Segment(line, Style(color="yellow"))
+        return Strip([segment], len(line))
+
     def on_click(self):
         self.app.push_screen("SettingsScreen")
 
 class TerminalApp(Static):
+    def render_line(self, y: int) -> Strip:
+        """Render a line of the terminal icon."""
+        terminal_icon = [
+            " _______ ",
+            "|       |",
+            "|   >_  |",
+            "|_______|",
+            "Terminal "
+        ]
+
+        if y >= len(terminal_icon):
+            return Strip.blank(self.size.width)
+
+        line = terminal_icon[y]
+        segment = Segment(line, Style(color="green"))
+        return Strip([segment], len(line))
+
     def on_click(self):
         self.app.push_screen("TerminalScreen")
 
@@ -28,8 +67,8 @@ class DashScreen(ModalScreen[str]):
     def compose(self) -> ComposeResult:
         yield Static(id="topbar")
         yield Static("", id="clock")
-        yield SettingsApp("Settings", id="settings",  classes="box")
         yield TerminalApp("Terminal", id="terminal", classes="box")
+        yield SettingsApp("Settings", id="settings",  classes="box")
         yield RandomApp("App Three", classes="box")
         yield RandomApp("App Four", classes="box")
         yield RandomApp("App Five", classes="box")

@@ -72,10 +72,13 @@ DashScreen {
 
 #settings {
     opacity: 100.0;
+    text-align: center;
+
 }
 
 #terminal {
     opacity: 100.0;
+    text-align: center;
 }
 
 SettingsScreen {
@@ -133,5 +136,5 @@ SettingButton {
 
 Terminal {
     background: rgb(94, 39, 80);
-    border: ascii rgb(233, 84, 32);
+    border: round rgb(233, 84, 32);
 }
