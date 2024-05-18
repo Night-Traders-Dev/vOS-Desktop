@@ -19,6 +19,10 @@ class Terminal(TextArea):
             event.prevent_default()
             if command == "exit":
                 self.app.push_screen("DesktopBase")
+            elif command == "shutdown":
+                self.app.exit()
+            else:
+                pass
 
 
 

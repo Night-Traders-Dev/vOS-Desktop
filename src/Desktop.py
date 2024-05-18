@@ -18,14 +18,13 @@ class DashButton(Static):
     def render_line(self, y: int) -> Strip:
         """Render a line of the app drawer icon."""
         app_drawer_icon = [
-            " • • • ",
-            " • • • ",
-            " • • • "
+            " • • ",
+            " • • "
         ]
-        
+
         if y >= len(app_drawer_icon):
             return Strip.blank(self.size.width)
-        
+
         line = app_drawer_icon[y]
         segment = Segment(line, Style(color="rgb(233, 84, 32)"))
         return Strip([segment], len(line))
@@ -36,7 +35,7 @@ class DashButton(Static):
 
 class Dash(Static):
     def compose(self) -> ComposeResult:
-        yield DashButton("Dash\nboard", classes="dashapp")
+        yield DashButton("\n", classes="dashapp")
 
 
 
@@ -120,7 +119,6 @@ class Desktop(App):
 
     def on_load(self) -> ComposeResult:
         yield LoadingIndicator()
-        self.set_timer(10)
     @work
     async def on_mount(self) -> None:
         await self.push_screen_wait("DesktopBase")

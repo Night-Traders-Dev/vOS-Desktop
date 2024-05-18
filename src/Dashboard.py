@@ -10,9 +10,6 @@ from rich.segment import Segment
 from rich.style import Style
 from textual.strip import Strip
 
-
-
-
 class SettingsApp(Static):
     def render_line(self, y: int) -> Strip:
         """Render a line of the settings icon."""
@@ -29,7 +26,7 @@ class SettingsApp(Static):
             return Strip.blank(self.size.width)
 
         line = settings_icon[y]
-        segment = Segment(line, Style(color="yellow"))
+        segment = Segment(line, Style(color="yellow", bold=True))
         return Strip([segment], len(line))
 
     def on_click(self):
@@ -50,7 +47,7 @@ class TerminalApp(Static):
             return Strip.blank(self.size.width)
 
         line = terminal_icon[y]
-        segment = Segment(line, Style(color="green"))
+        segment = Segment(line, Style(color="green", bold=True))
         return Strip([segment], len(line))
 
     def on_click(self):
