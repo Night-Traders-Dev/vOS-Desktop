@@ -9,6 +9,10 @@ DesktopBase {
     layer: one;
 }
 
+LoadingIndicator {
+   color: rgb(233, 84, 32);
+}
+
 #dash {
     layout: grid;
     grid-size: 0 6;
@@ -22,6 +26,7 @@ DesktopBase {
 .dashapp {
 
    border: solid rgba(233, 84, 32, 0.2);
+   offset-y: 3;
    layer: two;
    opacity: 100.0;
 }

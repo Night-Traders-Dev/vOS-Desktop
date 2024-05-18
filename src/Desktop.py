@@ -10,19 +10,24 @@ from Settings import SettingsScreen
 from components.background_gradient import ScreenSaver
 
 
+class DashButton(Static):
+    def on_click(self):
+        self.app.push_screen("DashScreen")
+
+
+class Dash(Static):
+    def compose(self) -> ComposeResult:
+        yield DashButton("Dash\nboard", classes="dashapp")
+
+
+
 class DesktopBase(Screen):
 
     def compose(self) -> ComposeResult:
-        self.dash = Static(id="dash", classes="DashClass")
+        self.dash = Dash(id="dash", classes="DashClass")
         yield self.dash
         yield Static(id="topbar")
         yield Static("", id="clock")
-        yield Static("App One", classes="dashapp")
-#        yield Static("App Two", classes="dashapp")
-#        yield Static("App Three", classes="dashapp")
-#        yield Static("App Four", classes="dashapp")
-#        yield Static("App Five", classes="dashapp")
-#        yield Static("App Six", classes="dashapp")
 
 
     # Clock Method
@@ -82,7 +87,7 @@ class DesktopBase(Screen):
             if self.dash.opacity == 0.0:
                 self.dash_animation(True)
             else:
-                self.app.push_screen("DashScreen")
+                pass
 
         else:
             self.dash_animation(False)
@@ -119,12 +124,14 @@ class DashScreen(ModalScreen[str]):
     @on(events.MouseEvent)
     def go_back(self):
         self.app.push_screen("SettingsScreen")
-#        self.dismiss("App Name")
 
 class Desktop(App):
     CSS_PATH = "Desktop.tcss"
     SCREENS = {"DesktopBase": DesktopBase(), "DashScreen": DashScreen(), "SettingsScreen": SettingsScreen(), "ScreenSaver": ScreenSaver()}
 
+    def on_load(self) -> ComposeResult:
+        yield LoadingIndicator()
+        self.set_timer(10)
     @work
     async def on_mount(self) -> None:
         await self.push_screen_wait("DesktopBase")
