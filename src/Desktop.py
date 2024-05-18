@@ -8,6 +8,7 @@ from textual import on, events, work
 from datetime import datetime
 from Settings import SettingsScreen
 from Dashboard import DashScreen
+from Terminal import TerminalScreen
 from components.background_gradient import ScreenSaver
 
 
@@ -98,7 +99,7 @@ class DesktopBase(Screen):
 
 class Desktop(App):
     CSS_PATH = "Desktop.tcss"
-    SCREENS = {"DesktopBase": DesktopBase(), "DashScreen": DashScreen(), "SettingsScreen": SettingsScreen(), "ScreenSaver": ScreenSaver()}
+    SCREENS = {"DesktopBase": DesktopBase(), "DashScreen": DashScreen(), "SettingsScreen": SettingsScreen(), "ScreenSaver": ScreenSaver(), "TerminalScreen": TerminalScreen()}
 
     def on_load(self) -> ComposeResult:
         yield LoadingIndicator()

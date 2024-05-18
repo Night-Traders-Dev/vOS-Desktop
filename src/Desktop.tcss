@@ -74,6 +74,10 @@ DashScreen {
     opacity: 100.0;
 }
 
+#terminal {
+    opacity: 100.0;
+}
+
 SettingsScreen {
     layers: one two three four;
     layout: grid;
@@ -125,4 +129,9 @@ SettingButton {
 }
 
 
+}
+
+Terminal {
+    background: rgb(94, 39, 80);
+    border: ascii rgb(233, 84, 32);
 }

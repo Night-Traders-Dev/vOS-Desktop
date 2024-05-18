@@ -13,6 +13,11 @@ class SettingsApp(Static):
     def on_click(self):
         self.app.push_screen("SettingsScreen")
 
+class TerminalApp(Static):
+    def on_click(self):
+        self.app.push_screen("TerminalScreen")
+
+
 class RandomApp(Static):
     def on_click(self):
         self.app.push_screen("DesktopBase")
@@ -24,7 +29,7 @@ class DashScreen(ModalScreen[str]):
         yield Static(id="topbar")
         yield Static("", id="clock")
         yield SettingsApp("Settings", id="settings",  classes="box")
-        yield RandomApp("App Two", classes="box")
+        yield TerminalApp("Terminal", id="terminal", classes="box")
         yield RandomApp("App Three", classes="box")
         yield RandomApp("App Four", classes="box")
         yield RandomApp("App Five", classes="box")
