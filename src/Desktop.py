@@ -10,9 +10,26 @@ from Settings import SettingsScreen
 from Dashboard import DashScreen
 from Terminal import TerminalScreen
 from components.background_gradient import ScreenSaver
-
+from rich.segment import Segment
+from rich.style import Style
+from textual.strip import Strip
 
 class DashButton(Static):
+    def render_line(self, y: int) -> Strip:
+        """Render a line of the app drawer icon."""
+        app_drawer_icon = [
+            " █ █ █ ",
+            "       ",
+            " █ █ █ "
+        ]
+        
+        if y >= len(app_drawer_icon):
+            return Strip.blank(self.size.width)
+        
+        line = app_drawer_icon[y]
+        segment = Segment(line, Style(color="rgb(233, 84, 32)"))
+        return Strip([segment], len(line))
+
     def on_click(self):
         self.app.push_screen("DashScreen")
 
