@@ -9,21 +9,29 @@ from datetime import datetime
 
 
 
+class SettingsApp(Static):
+    def on_click(self):
+        self.app.push_screen("SettingsScreen")
+
+class RandomApp(Static):
+    def on_click(self):
+        self.app.push_screen("DesktopBase")
+
 class DashScreen(ModalScreen[str]):
 
     CSS_PATH = "Desktop.tcss"
     def compose(self) -> ComposeResult:
         yield Static(id="topbar")
         yield Static("", id="clock")
-        yield Static("App One", classes="box")
-        yield Static("App Two", classes="box")
-        yield Static("App Three", classes="box")
-        yield Static("App Four", classes="box")
-        yield Static("App Five", classes="box")
-        yield Static("App Six", classes="box")
-        yield Static("App Seven", classes="box")
-        yield Static("App Eight", classes="box")
-        yield Static("App Nine", classes="box")
+        yield SettingsApp("Settings", classes="box")
+        yield RandomApp("App Two", classes="box")
+        yield RandomApp("App Three", classes="box")
+        yield RandomApp("App Four", classes="box")
+        yield RandomApp("App Five", classes="box")
+        yield RandomApp("App Six", classes="box")
+        yield RandomApp("App Seven", classes="box")
+        yield RandomApp("App Eight", classes="box")
+        yield RandomApp("App Nine", classes="box")
 
     # Clock Method
     @on(events.Mount)
@@ -34,8 +42,7 @@ class DashScreen(ModalScreen[str]):
     def update_clock(self) -> None:
         clock = datetime.now().time()
         self.query_one("#clock", Static).update(f"{clock:%T}")
-    # End Clock
-    @on(events.MouseEvent)
-    def go_back(self):
-        self.app.push_screen("SettingsScreen")
+#    # End Clock
+#    @on(events.MouseEvent)
+#    def go_back(self):
 #        self.dismiss("App Name")
