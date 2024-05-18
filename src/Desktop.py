@@ -18,9 +18,9 @@ class DashButton(Static):
     def render_line(self, y: int) -> Strip:
         """Render a line of the app drawer icon."""
         app_drawer_icon = [
-            " █ █ █ ",
-            "       ",
-            " █ █ █ "
+            " • • • ",
+            " • • • ",
+            " • • • "
         ]
         
         if y >= len(app_drawer_icon):
