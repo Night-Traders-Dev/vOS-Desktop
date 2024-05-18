@@ -66,10 +66,13 @@ DashScreen {
     width: 1fr;
     border: solid rgba(233, 84, 32, 0.2);
     layer: one;
-
+    opacity: 0.0;
 
 }
 
+#settings {
+    opacity: 100.0;
+}
 
 SettingsScreen {
     layers: one two three four;

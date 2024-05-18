@@ -23,7 +23,7 @@ class DashScreen(ModalScreen[str]):
     def compose(self) -> ComposeResult:
         yield Static(id="topbar")
         yield Static("", id="clock")
-        yield SettingsApp("Settings", classes="box")
+        yield SettingsApp("Settings", id="settings",  classes="box")
         yield RandomApp("App Two", classes="box")
         yield RandomApp("App Three", classes="box")
         yield RandomApp("App Four", classes="box")
