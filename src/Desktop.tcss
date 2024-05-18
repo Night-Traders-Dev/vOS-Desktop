@@ -55,9 +55,10 @@ LoadingIndicator {
 
 DashScreen {
     background: rgba(191, 189, 183, 0.08);
-    align: center middle;
     layout: grid;
     grid-size: 3 3;
+    height: 3fr;
+    width: 3fr;
     layer: one;
 }
 
@@ -72,13 +73,13 @@ DashScreen {
 
 #settings {
     opacity: 100.0;
-    text-align: center;
+    content-align: center middle;
 
 }
 
 #terminal {
     opacity: 100.0;
-    text-align: center;
+    content-align: center middle;
 }
 
 SettingsScreen {
@@ -137,4 +138,5 @@ SettingButton {
 Terminal {
     background: rgb(94, 39, 80);
     border: round rgb(233, 84, 32);
+    padding: 0;
 }

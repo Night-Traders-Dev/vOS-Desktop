@@ -11,6 +11,9 @@ class Terminal(TextArea):
         self.insert("$ ")
 
     def _on_key(self, event: events.Key) -> None:
+        curline, currow = self.get_cursor_line_start_location()
+        if currow == 1:
+            self.undo()
         if event.key == "enter":
             curline, currow = self.get_cursor_line_start_location()
             command = self.get_line(curline)
@@ -18,6 +21,8 @@ class Terminal(TextArea):
             self.insert("\n" + command + "\n$ ")
             event.prevent_default()
             if command == "exit":
+                self.clear()
+                self.insert("\n" + command + "\n$ ")
                 self.app.push_screen("DesktopBase")
             elif command == "shutdown":
                 self.app.exit()
