@@ -140,3 +140,22 @@ Terminal {
     border: round rgb(233, 84, 32);
     padding: 0;
 }
+
+
+LoginScreen {
+
+background: rgb(44, 0, 30);
+layout: grid;
+grid-rows: 1fr 9fr;
+grid-columns: 1fr 9fr;
+width: 1fr;
+height: 1fr;
+}
+
+LoginPrompt {
+    offset-y: 6;
+    offset-x: 4;
+    width: 25;
+    background: rgba(44, 0, 30, 60);
+    border: solid rgba(233, 84, 32, 0.2);
+}

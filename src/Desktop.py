@@ -9,6 +9,7 @@ from datetime import datetime
 from Settings import SettingsScreen
 from Dashboard import DashScreen
 from Terminal import TerminalScreen
+from Login import LoginScreen
 from components.background_gradient import ScreenSaver
 from rich.segment import Segment
 from rich.style import Style
@@ -126,12 +127,13 @@ class Desktop(App):
         "DashScreen": DashScreen(),
         "SettingsScreen": SettingsScreen(),
         "ScreenSaver": ScreenSaver(),
-        "TerminalScreen": TerminalScreen()
+        "TerminalScreen": TerminalScreen(),
+        "LoginScreen": LoginScreen()
      }
 
     @work
     async def on_mount(self) -> None:
-        await self.push_screen_wait("DesktopBase")
+        await self.push_screen_wait("LoginScreen")
 
 if __name__ == "__main__":
     app = Desktop()
