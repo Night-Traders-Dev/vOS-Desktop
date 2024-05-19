@@ -143,7 +143,7 @@ Terminal {
 
 
 LoginScreen {
-
+layers: one two;
 background: rgb(44, 0, 30);
 layout: grid;
 grid-rows: 1fr 9fr;
@@ -153,9 +153,19 @@ height: 1fr;
 }
 
 LoginPrompt {
+    layer: one;
     offset-y: 6;
     offset-x: 4;
     width: 25;
     background: rgba(44, 0, 30, 60);
     border: solid rgba(233, 84, 32, 0.2);
+}
+
+
+#LoginLabel {
+    layer: two;
+    offset-y: 8;
+    offset-x: 4;
+    width: 25;
+    background: rgba(44, 0, 30, 60);
 }

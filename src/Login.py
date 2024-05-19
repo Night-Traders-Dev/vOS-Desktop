@@ -1,10 +1,7 @@
 from textual.app import App, ComposeResult
-from textual.color import Color
-from textual.widgets import Static, LoadingIndicator, Input
-from textual.containers import Grid
-from textual.geometry import Region
-from textual.screen import Screen, ModalScreen
-from textual import on, events, work
+from textual.widgets import Input, Label, Static
+from textual.screen import Screen
+from textual import on, events
 from datetime import datetime
 
 
@@ -32,6 +29,7 @@ class LoginPrompt(Input):
             self.value = ""
         else:
             password = event.value
+            self.notify(f"{username} logged in.", title="vOS Notification")
             username = ""
             password = ""
             self.value = ""
@@ -47,6 +45,7 @@ class LoginScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Static(id="topbar")
         yield Static("", id="clock")
+        yield Label("vOS Login", id="LoginLabel")
         yield LoginPrompt(id="userprompt")
 
 
