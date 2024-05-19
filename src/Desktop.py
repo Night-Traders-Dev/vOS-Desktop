@@ -74,11 +74,16 @@ class DesktopBase(Screen):
 
     # MouseMove Alternative
     def is_mouse_over_widget(
-        self, widget_x, widget_y, widget_width, widget_height,
+        self, widget_x, widget_y,
+        widget_width, widget_height,
         mouse_x, mouse_y,
         screen_width, screen_height
         ):
-        return widget_x <= mouse_x <= widget_x + widget_width and widget_y <= mouse_y <= widget_y + widget_height
+        return (
+             widget_x <= mouse_x <= widget_x + widget_width
+             and
+             widget_y <= mouse_y <= widget_y + widget_height
+             )
 
     def dash_animation(self, reveal: bool):
         if reveal:
@@ -98,7 +103,8 @@ class DesktopBase(Screen):
         term_height = 24
         term_width = 80
         if self.is_mouse_over_widget(
-            dash_loc.x, dash_loc.y, dash_loc.width, dash_loc.height,
+            dash_loc.x, dash_loc.y,
+            dash_loc.width, dash_loc.height,
             event.x, event.y,
             term_width, term_height
             ):
@@ -115,10 +121,14 @@ class DesktopBase(Screen):
 
 class Desktop(App):
     CSS_PATH = "Desktop.tcss"
-    SCREENS = {"DesktopBase": DesktopBase(), "DashScreen": DashScreen(), "SettingsScreen": SettingsScreen(), "ScreenSaver": ScreenSaver(), "TerminalScreen": TerminalScreen()}
+    SCREENS = {
+        "DesktopBase": DesktopBase(),
+        "DashScreen": DashScreen(),
+        "SettingsScreen": SettingsScreen(),
+        "ScreenSaver": ScreenSaver(),
+        "TerminalScreen": TerminalScreen()
+     }
 
-    def on_load(self) -> ComposeResult:
-        yield LoadingIndicator()
     @work
     async def on_mount(self) -> None:
         await self.push_screen_wait("DesktopBase")
