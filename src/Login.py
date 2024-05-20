@@ -3,7 +3,8 @@ from components.topbar import Clock, TopBar
 from textual.widgets import Input, Label, Static
 from textual.screen import Screen
 from textual import on, events
-
+#from vapi.vapi import passwordtools_instance
+#from vapi.vapi import fs_instance
 
 class LoginPrompt(Input):
     username = ""
@@ -42,6 +43,16 @@ class LoginPrompt(Input):
                 self.app.push_screen("DesktopBase")
             else:
                 self.notify("Password Required", title="vOS Notification", severity="warning", timeout = 1.25)
+
+#    def auth(self):
+#        self.fs = fs_instance()
+#        elf.passwordtools = passwordtools_instance()
+#        self.passwordtools.check_passwd_file(self.fs)
+#        login = self.passwordtools.authenticate(username, password)
+#        if login:
+#            self.dismiss(True)
+#        else:
+#            self.mount(Label("Account not found!"))
 
 
 class LoginScreen(Screen):
