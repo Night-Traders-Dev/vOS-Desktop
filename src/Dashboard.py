@@ -82,8 +82,6 @@ class DashScreen(ModalScreen[str]):
         self.set_interval(1, self.update_clock)
 
     def update_clock(self) -> None:
-        clock = datetime.now().time()
-        self.query_one("#clock", Static).update(f"{clock:%T}")
         if self.dash_timer == 30:
             self.dash_timer = 0
             self.app.push_screen("DesktopBase")

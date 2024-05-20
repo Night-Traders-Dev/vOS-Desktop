@@ -25,7 +25,6 @@ LoadingIndicator {
 
 .dashapp {
 
-   border: solid rgba(233, 84, 32, 0.2);
    offset-y: 3;
    layer: two;
    opacity: 100.0;

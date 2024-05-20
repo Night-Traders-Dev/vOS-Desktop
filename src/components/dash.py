@@ -12,8 +12,8 @@ class DashButton(Static):
     def render_line(self, y: int) -> Strip:
         """Render a line of the app drawer icon."""
         app_drawer_icon = [
-            " • • ",
-            " • • "
+            " • • • ",
+            " • • • "
         ]
 
         if y >= len(app_drawer_icon):
@@ -46,6 +46,9 @@ class Dash(Static):
     def dash_animation(self, reveal: bool):
         if reveal:
             self.styles.animate("opacity", value=100.0, duration=1.5)
+            self.dash_timer = 0
+            self.update_clock()
+            self.set_interval(1, self.update_clock)
         else:
             self.styles.animate("opacity", value=0.0, duration=0.5)
 
@@ -70,3 +73,14 @@ class Dash(Static):
         else:
             self.dash_animation(False)
     # End Dash Reveal
+
+
+    def update_clock(self) -> None:
+        if self.opacity == 100.0:
+           if self.dash_timer == 3:
+               self.dash_timer = 0
+               self.dash_animation(False)
+           else:
+               self.dash_timer += 1
+        else:
+            self.dash_timer = 0
