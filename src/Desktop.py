@@ -18,10 +18,6 @@ class DesktopBase(Screen):
         yield self.dash
         yield TopBar(id="topbar")
 
-    @on(events.MouseEvent)
-    def dash_helper(self):
-        if self.dash.get_dash_opacity == 100.0:
-            self.dash.dash_animation(False)
 
 
 class Desktop(App):

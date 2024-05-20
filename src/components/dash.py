@@ -32,16 +32,15 @@ class Dash(Static):
         yield DashButton("\n", classes="dashapp")
 
     # MouseMove Alternative
-    def is_mouse_over_widget(
-        self, widget_x, widget_y,
-        widget_width, widget_height,
-        mouse_x, mouse_y,
-        screen_width, screen_height
+    def is_mouse_over_dash(
+        self,
+        mouse_x, mouse_y
         ):
+        widget = self.region
         return (
-             widget_x <= mouse_x <= widget_x + widget_width
+             widget.x <= mouse_x <= widget.x + widget.width
              and
-             widget_y <= mouse_y <= widget_y + widget_height
+             widget.y <= mouse_y <= widget.y + widget.height
              )
 
     def dash_animation(self, reveal: bool):
@@ -54,29 +53,19 @@ class Dash(Static):
     def get_dash_opacity(self):
         return self.opacity
 
+ 
     # Dash Reveal Trigger
     @on(events.MouseEvent)
     def dash_thrigger(self, event: events.MouseEvent) -> None:
         dash_loc = self.region
         timer = 0
-        term_height = 24
-        term_width = 80
-        if self.is_mouse_over_widget(
-            dash_loc.x, dash_loc.y,
-            dash_loc.width, dash_loc.height,
-            event.x, event.y,
-            term_width, term_height
+        if self.is_mouse_over_dash(
+            event.x, event.y
             ):
             if self.opacity == 0.0:
                 self.dash_animation(True)
-                if timer != 3:
-                    timer += 1
-                    self.auto_refresh = 1
-                else:
-                    timer = 0
-                    self.animation(False)
             else:
-                pass
+                self.dash_animation(False)
 
         else:
             self.dash_animation(False)
