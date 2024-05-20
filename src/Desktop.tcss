@@ -94,7 +94,7 @@ SettingsScreen {
    height: 2fr;
    width: 20;
    dock: left;
-   background: rgb(255, 255, 255);
+   background: rgb(51, 51, 51);
    layer: one;
 }
 
