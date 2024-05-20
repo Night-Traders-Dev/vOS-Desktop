@@ -34,17 +34,24 @@ class LoginPrompt(Input):
         else:
             password = event.value
             if password != "":
-                self.notify(f"{username} logged in.", title="vOS Notification")
-                username = ""
-                password = ""
-                self.value = ""
-                self.password = False
-                self.placeholder = "Username"
-                self.app.push_screen("DesktopBase")
+                if self.auth():
+                    self.notify(f"{username} logged in.", title="vOS Notification")
+                    self.app.push_screen("DesktopBase")
+                else:
+                    self.notify("Account Not Found", title="vOS Notification", severity="warning", timeout = 1.25)
+                    username = ""
+                    password = ""
+                    self.value = ""
+                    self.password = False
+                    self.placeholder = "Username"
             else:
                 self.notify("Password Required", title="vOS Notification", severity="warning", timeout = 1.25)
 
-#    def auth(self):
+    def auth(self):
+        if username == "admin" and password == "admin":
+            return True
+        else:
+            return False
 #        self.fs = fs_instance()
 #        elf.passwordtools = passwordtools_instance()
 #        self.passwordtools.check_passwd_file(self.fs)
