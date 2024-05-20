@@ -48,7 +48,7 @@ class Dash(Static):
             self.styles.animate("opacity", value=100.0, duration=1.5)
             self.dash_timer = 0
             self.update_clock()
-            self.set_interval(6, self.update_clock, repeat=1)
+            self.dash_clock = self.set_interval(6, self.update_clock, repeat=1)
         else:
             self.styles.animate("opacity", value=0.0, duration=0.5)
 
@@ -56,7 +56,6 @@ class Dash(Static):
     def get_dash_opacity(self):
         return self.opacity
 
- 
     # Dash Reveal Trigger
     @on(events.MouseEvent)
     def dash_thrigger(self, event: events.MouseEvent) -> None:
@@ -78,6 +77,7 @@ class Dash(Static):
 
     def update_clock(self) -> None:
         if self.dash_timer == 3:
+            self.dash_clock.pause()
             self.dash_animation(False)
             self.dash_timer = 0
         else:
