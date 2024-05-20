@@ -29,7 +29,7 @@ class DashButton(Static):
 
 class Dash(Static):
     def compose(self) -> ComposeResult:
-        yield DashButton("\n", classes="dashapp")
+        yield DashButton("\n\n", classes="dashapp")
 
     # MouseMove Alternative
     def is_mouse_over_dash(
