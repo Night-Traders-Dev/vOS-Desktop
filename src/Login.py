@@ -24,19 +24,24 @@ class LoginPrompt(Input):
         global username, password
         if not self.password:
             username = event.value
-            self.password = True
-            self.placeholder = "Password"
-            self.value = ""
+            if username != "":
+                self.password = True
+                self.placeholder = "Password"
+                self.value = ""
+            else:
+                self.notify("Username Required", title="vOS Notification", severity="warning", timeout = 1.25)
         else:
             password = event.value
-            self.notify(f"{username} logged in.", title="vOS Notification")
-            username = ""
-            password = ""
-            self.value = ""
-            self.password = False
-            self.placeholder = "Username"
-            self.app.push_screen("DesktopBase")
-
+            if password != "":
+                self.notify(f"{username} logged in.", title="vOS Notification")
+                username = ""
+                password = ""
+                self.value = ""
+                self.password = False
+                self.placeholder = "Username"
+                self.app.push_screen("DesktopBase")
+            else:
+                self.notify("Password Required", title="vOS Notification", severity="warning", timeout = 1.25)
 
 
 class LoginScreen(Screen):
