@@ -8,7 +8,6 @@ from Login import LoginScreen
 from components.dash  import Dash
 from components.topbar import Clock, TopBar
 from components.background_gradient import ScreenSaver
-#
 
 
 
