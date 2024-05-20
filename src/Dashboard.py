@@ -9,6 +9,7 @@ from datetime import datetime
 from rich.segment import Segment
 from rich.style import Style
 from textual.strip import Strip
+from components.topbar import Clock, TopBar
 
 class SettingsApp(Static):
     def render_line(self, y: int) -> Strip:
@@ -62,8 +63,7 @@ class DashScreen(ModalScreen[str]):
 
     CSS_PATH = "Desktop.tcss"
     def compose(self) -> ComposeResult:
-        yield Static(id="topbar")
-        yield Static("", id="clock")
+        yield TopBar(id="topbar")
         yield TerminalApp("Terminal", id="terminal", classes="box")
         yield SettingsApp("Settings", id="settings",  classes="box")
         yield RandomApp("App Three", classes="box")

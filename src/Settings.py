@@ -5,8 +5,8 @@ from textual.containers import Grid
 from textual.geometry import Region
 from textual.message import Message
 from textual.screen import Screen, ModalScreen
+from components.topbar import Clock, TopBar
 from textual import on, events, work
-from datetime import datetime
 
 
 
@@ -41,8 +41,7 @@ class SettingsScreen(Screen):
     CSS_PATH = "Desktop.tcss"
 
     def compose(self) -> ComposeResult:
-        yield Static(id="topbarsettings")
-        yield Static("", id="clocksettings")
+        yield TopBar(id="topbar")
         yield ListView(
             ListItem(self.SettingButton("account")),
             ListItem(self.SettingButton("display")),

@@ -47,7 +47,7 @@ LoadingIndicator {
     color: rgb(17, 17, 17);
     text-style: bold;
     dock: top;
-    layer: one;
+    layer: three;
     content-align: center top;
 }
 
@@ -83,34 +83,12 @@ DashScreen {
 }
 
 SettingsScreen {
-    layers: one two three four;
     layout: grid;
     grid-size: 3 3;
     background: rgb(136, 138, 133);
     height: 3fr;
     width: 3fr;
 
-
-
-#topbarsettings {
-    layout: vertical;
-    align: center top;
-    background: rgba(119, 33, 111, 100);
-    height: 3;
-    width: 1fr;
-    dock: top;
-    layer: one;
-}
-
-#clocksettings {
-    offset-y: 1;
-    background: rgba(119, 33, 111, 100);
-    color: rgb(17, 17, 17);
-    text-style: bold;
-    dock: top;
-    layer: one;
-    content-align: center top;
-}
 
 #sidebar {
    offset-y: 3;
@@ -135,7 +113,19 @@ SettingButton {
 
 }
 
+TerminalScreen {
+    background: rgb(44, 0, 30);
+    layout: grid;
+    grid-rows: 1fr 9fr;
+    grid-columns: 1fr 9fr;
+    width: 1fr;
+    height: 1fr;
+    layer: one;
+}
+
+
 Terminal {
+    layer: one;
     background: rgb(94, 39, 80);
     border: round rgb(233, 84, 32);
     padding: 0;
@@ -143,13 +133,12 @@ Terminal {
 
 
 LoginScreen {
-layers: one two;
-background: rgb(44, 0, 30);
-layout: grid;
-grid-rows: 1fr 9fr;
-grid-columns: 1fr 9fr;
-width: 1fr;
-height: 1fr;
+    background: rgb(44, 0, 30);
+    layout: grid;
+    grid-rows: 1fr 9fr;
+    grid-columns: 1fr 9fr;
+    width: 1fr;
+    height: 1fr;
 }
 
 LoginPrompt {

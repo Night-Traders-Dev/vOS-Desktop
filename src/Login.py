@@ -1,8 +1,8 @@
 from textual.app import App, ComposeResult
+from components.topbar import Clock, TopBar
 from textual.widgets import Input, Label, Static
 from textual.screen import Screen
 from textual import on, events
-from datetime import datetime
 
 
 class LoginPrompt(Input):
@@ -43,19 +43,8 @@ class LoginScreen(Screen):
 
 
     def compose(self) -> ComposeResult:
-        yield Static(id="topbar")
-        yield Static("", id="clock")
+        yield TopBar(id="topbar")
         yield Label("vOS Login", id="LoginLabel")
         yield LoginPrompt(id="userprompt")
 
 
-# Clock Method
-    @on(events.Mount)
-    def clock_timer(self) -> None:
-        self.update_clock()
-        self.set_interval(1, self.update_clock)
-
-    def update_clock(self) -> None:
-        clock = datetime.now().time()
-        self.query_one("#clock", Static).update(f"{clock:%T}")
-    # End Clock

@@ -2,6 +2,7 @@ from textual import events, on
 from textual.app import App, ComposeResult
 from textual.screen import Screen
 from textual.widgets import TextArea
+from components.topbar import Clock, TopBar
 #from vapi.vapi import CommandParse
 
 class Terminal(TextArea):
@@ -36,6 +37,7 @@ class TerminalScreen(Screen):
     CSS_PATH = "Desktop.tcss"
 
     def compose(self) -> ComposeResult:
+        yield TopBar(id="topbar")
         yield Terminal.code_editor(language="python")
 
 
