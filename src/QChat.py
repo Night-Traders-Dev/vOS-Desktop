@@ -21,11 +21,11 @@ class IRCScreen(Screen):
 
 
     async def on_mount(self):
-        self.start_client("127.0.0.1", 6667, "admin")
+        self.start_client("192.168.254.1", 67, "admin")
 
     async def receive_messages(self, client_socket):
         try:
-            message = self.client_socket.recv(1024).decode('utf-8')
+            message = self.client_socket.recv(4096).decode('utf-8')
             if message:
                self.call_from_thread(self.text_area.insert, f"{message}\n")
             else:
@@ -41,7 +41,7 @@ class IRCScreen(Screen):
         try:
             self.client_socket.connect((server_ip, server_port))
         except Exception as e:
-            self.update_text_area(f"Error connecting to server: {e}")
+            self.text_area.insert(f"Error connecting to server: {e}")
             return
 
         receive_thread = threading.Thread(target=self.receive_messages, args=(self.client_socket,))
@@ -52,8 +52,8 @@ class IRCScreen(Screen):
         message = event.value
         if message:
             if message == '/quit':
-                self.client_socket.send(f"{self.nickname} has left the chat.".encode('utf-8'))
-                self.client_socket.close()
+#                self.client_socket.send(f"{self.nickname} has left the chat.".encode('utf-8'))
+#                self.client_socket.close()
                 self.app.push_screen("TerminalScreen")
             else:
                 self.client_socket.send(f"{self.nickname}: {message}".encode('utf-8'))

@@ -1,42 +1,57 @@
-import socket
-import threading
+import asyncio
+from datetime import datetime
 
-clients = []
+class IRCServerProtocol(asyncio.Protocol):
+    clients = []
 
-def broadcast(message, client_socket):
-    for client in clients:
-        if client != client_socket:
-            try:
-                client.send(message)
-            except:
-                clients.remove(client)
+    def __init__(self):
+        self.transport = None
+        self.nickname = None
 
-def handle_client(client_socket):
-    while True:
-        try:
-            message = client_socket.recv(1024)
-            if message:
-                print(f"Received message: {message.decode('utf-8')}")
-                send(message, client_socket)
+    def connection_made(self, transport):
+        self.transport = transport
+        self.peername = transport.get_extra_info('peername')
+        self.transport.write(b"Welcome to the IRC server! Please set your nickname with /nick <your_nickname>.\n")
+        IRCServerProtocol.clients.append(self)
+        print(f"Connection from {self.peername}")
+
+    def data_received(self, data):
+        message = data.decode().strip()
+        if message.startswith("/nick "):
+            self.nickname = message.split(" ", 1)[1]
+            self.transport.write(f"Nickname set to {self.nickname}\n".encode())
+        else:
+            if self.nickname:
+                timestamp = datetime.now().strftime("%H:%M:%S")
+                formatted_message = f"[{timestamp}] {self.nickname}: {message}"
+                self.broadcast_message(formatted_message)
             else:
-                clients.remove(client_socket)
-                break
-        except:
-            clients.remove(client_socket)
-            break
+                self.transport.write(b"Please set your nickname with /nick <your_nickname> before sending messages.\n")
 
-def start_server(server_ip, server_port):
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((server_ip, server_port))
-    server_socket.listen(5)
-    print(f"Server started on {server_ip}:{server_port}")
+    def connection_lost(self, exc):
+        print(f"Client {self.peername} disconnected")
+        IRCServerProtocol.clients.remove(self)
+        if exc:
+            print(f"Connection lost due to error: {exc}")
 
-    while True:
-        client_socket, addr = server_socket.accept()
-        print(f"Accepted connection from {addr}")
-        clients.append(client_socket)
-        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
-        client_handler.start()
+    def broadcast_message(self, message):
+        for client in IRCServerProtocol.clients:
+            client.transport.write(f"{message}\n".encode())
+
+async def main():
+    loop = asyncio.get_running_loop()
+
+    server = await loop.create_server(
+        lambda: IRCServerProtocol(),
+        '127.0.0.1', 67
+    )
+
+    async with server:
+        print(f"Server started at {datetime.now()}")
+        await server.serve_forever()
 
 if __name__ == "__main__":
-    start_server("127.0.0.1", 6667)
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"Server error: {e}")
