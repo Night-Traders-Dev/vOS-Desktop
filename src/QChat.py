@@ -7,7 +7,7 @@ from textual import events, on
 
 class IRCScreen(Screen):
     nickname = "admin"
-    
+
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
         self.text_area.read_only = True
@@ -30,22 +30,15 @@ class IRCScreen(Screen):
                     break
                 message = data.decode().strip()
                 self.message_history.append(message)
-                self.print_messages()
+                await self.update_messages()
         except asyncio.CancelledError:
             pass
 
-    async def send_message(self, writer):
-        while True:
-            try:
-                message = await self.input_value.get()
-                if message:
-                    writer.write(f"{self.nickname}: {message}\n".encode())
-                    await writer.drain()
-                    self.message_history.append(f"Me: {message}")
-                    self.print_messages()
-                    self.input.value = ""
-            except asyncio.CancelledError:
-                break
+    async def send_message(self, writer, message):
+        writer.write(f"{self.nickname}: {message}\n".encode())
+        await writer.drain()
+        self.message_history.append(f"Me: {message}")
+        await self.update_messages()
 
     async def start_client(self, server_ip, server_port, nickname):
         self.reader, self.writer = await asyncio.open_connection(server_ip, server_port)
@@ -53,18 +46,19 @@ class IRCScreen(Screen):
         await self.writer.drain()
 
         self.receive_task = asyncio.create_task(self.handle_server(self.reader))
-        self.send_task = asyncio.create_task(self.send_message(self.writer))
 
-    def print_messages(self):
+    async def update_messages(self):
         self.text_area.clear()
         for message in self.message_history:
             self.text_area.insert(f"{message}\n")
 
     async def on_input_submitted(self, event: Input.Submitted):
-        await self.input_value.set(event.value)
+        message = event.value
+        if message:
+            await self.send_message(self.writer, message)
+            self.input.value = ""
 
     async def on_unmount(self):
         self.receive_task.cancel()
-        self.send_task.cancel()
         await self.writer.wait_closed()
 
