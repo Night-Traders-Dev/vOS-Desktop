@@ -159,3 +159,36 @@ LoginPrompt {
     color: rgb(174, 167, 159);
     background: rgba(44, 0, 30, 0.2);
 }
+
+
+IRCScreen {
+
+    align: center middle;
+    width: 100%;
+    height: 100%;
+    background: rgb(94, 39, 80);
+    border: double rgb(233, 84, 32);
+}
+
+
+
+#ircinput {
+    margin-bottom: 1;
+    margin-left: 1;
+    width: 60%; /* Increase the width of the input */
+    dock: bottom;
+    border: rgb(174, 167, 159);
+}
+
+
+#ircoutput {
+    color: rgb(44, 0, 30);
+    height: 60%;
+    width: 100%;
+    margin-left: 2;
+    margin-right: 2;
+    max-width: 95vw;
+    border: double rgb(119, 41, 83);
+    align: center top;                                                        padding: 2 2;
+    scrollbar-color: rgb(237, 118, 77);
+}

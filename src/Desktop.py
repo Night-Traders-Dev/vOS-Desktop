@@ -5,6 +5,7 @@ from Settings import SettingsScreen
 from Dashboard import DashScreen
 from Terminal import TerminalScreen
 from Login import LoginScreen
+from QChat import IRCScreen
 from components.dash  import Dash
 from components.topbar import Clock, TopBar
 from components.background_gradient import ScreenSaver
@@ -27,7 +28,8 @@ class Desktop(App):
         "SettingsScreen": SettingsScreen(),
         "ScreenSaver": ScreenSaver(),
         "TerminalScreen": TerminalScreen(),
-        "LoginScreen": LoginScreen()
+        "LoginScreen": LoginScreen(),
+        "QChat": IRCScreen()
      }
 
     @work
