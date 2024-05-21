@@ -74,20 +74,3 @@ class DashScreen(ModalScreen[str]):
         yield RandomApp("App Eight", classes="box")
         yield RandomApp("App Nine", classes="box")
 
-    # Clock Method
-    @on(events.Mount)
-    def clock_timer(self) -> None:
-        self.dash_timer = 0
-        self.update_clock()
-        self.set_interval(1, self.update_clock)
-
-    def update_clock(self) -> None:
-        if self.dash_timer == 30:
-            self.dash_timer = 0
-            self.app.push_screen("DesktopBase")
-        else:
-            self.dash_timer += 1
-    # End Clock
-    @on(events.MouseEvent)
-    def reset_timer(self):
-        self.dash_timer = 0

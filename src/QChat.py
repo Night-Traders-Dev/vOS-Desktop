@@ -1,7 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Input, TextArea
 from textual.screen import Screen
-from textual import events, on
+from textual import events, on, work
 from textual.containers import Vertical
 import socket
 import threading
@@ -19,25 +19,23 @@ class IRCScreen(Screen):
             yield self.text_area
             yield self.input
 
-    def on_mount(self):
+
+    async def on_mount(self):
         self.start_client("127.0.0.1", 6667, "admin")
 
-    def receive_messages(self, client_socket):
-        while True:
-            try:
-                message = client_socket.recv(1024).decode('utf-8')
-                if message:
-                    self.call_from_thread(self.update_text_area, message)
-                else:
-                    break
-            except Exception as e:
-                self.call_from_thread(self.update_text_area, f"Error receiving message: {e}")
-                break
+    async def receive_messages(self, client_socket):
+        try:
+            message = self.client_socket.recv(1024).decode('utf-8')
+            if message:
+               self.call_from_thread(self.text_area.insert, f"{message}\n")
+            else:
+                pass
+        except Exception as e:
+             self.call_from_thread(self.text_area.insert, f"Error receiving message: {e}")
 
-    def update_text_area(self, message: str):
-        self.text_area.append(f"{message}\n")
 
-    def start_client(self, server_ip, server_port, nickname):
+    @work(exclusive=True)
+    async def start_client(self, server_ip, server_port, nickname):
         self.nickname = nickname
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
@@ -50,19 +48,17 @@ class IRCScreen(Screen):
         receive_thread.daemon = True
         receive_thread.start()
 
-    def on_input_submitted(self, event: Input.Submitted):
+    async def on_input_submitted(self, event: Input.Submitted):
         message = event.value
         if message:
             if message == '/quit':
                 self.client_socket.send(f"{self.nickname} has left the chat.".encode('utf-8'))
                 self.client_socket.close()
-                self.app.exit()
+                self.app.push_screen("TerminalScreen")
             else:
                 self.client_socket.send(f"{self.nickname}: {message}".encode('utf-8'))
+                self.text_area.insert(f"Me: {message}\n")
                 self.input.value = ""
 
-    @on(Input.Submitted)
-    def handle_input(self, event: Input.Submitted) -> None:
-        self.on_input_submitted(event)
 
 

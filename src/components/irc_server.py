@@ -17,7 +17,7 @@ def handle_client(client_socket):
             message = client_socket.recv(1024)
             if message:
                 print(f"Received message: {message.decode('utf-8')}")
-                broadcast(message, client_socket)
+                send(message, client_socket)
             else:
                 clients.remove(client_socket)
                 break
