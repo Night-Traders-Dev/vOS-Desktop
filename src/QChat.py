@@ -1,64 +1,70 @@
+import asyncio
 from textual.app import App, ComposeResult
 from textual.widgets import Input, TextArea
 from textual.screen import Screen
-from textual import events, on, work
 from textual.containers import Vertical
-import socket
-import threading
-
+from textual import events, on
 
 class IRCScreen(Screen):
-    nickname = ""
+    nickname = "admin"
+    
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
         self.text_area.read_only = True
         self.text_area.cursor_blink = False
         self.text_area.theme = "vscode_dark"
-        self.input = Input(placeholder="admin: ", id="ircinput")
+        self.input = Input(placeholder=f"{self.nickname}: ", id="ircinput")
         with Vertical():
             yield self.text_area
             yield self.input
 
-
     async def on_mount(self):
-        self.start_client("192.168.254.1", 67, "admin")
+        self.message_history = []
+        await self.start_client("192.168.254.1", 8001, self.nickname)
 
-    async def receive_messages(self, client_socket):
+    async def handle_server(self, reader):
         try:
-            message = self.client_socket.recv(4096).decode('utf-8')
-            if message:
-               self.call_from_thread(self.text_area.insert, f"{message}\n")
-            else:
-                pass
-        except Exception as e:
-             self.call_from_thread(self.text_area.insert, f"Error receiving message: {e}")
+            while True:
+                data = await reader.read(100)
+                if not data:
+                    break
+                message = data.decode().strip()
+                self.message_history.append(message)
+                self.print_messages()
+        except asyncio.CancelledError:
+            pass
 
+    async def send_message(self, writer):
+        while True:
+            try:
+                message = await self.input_value.get()
+                if message:
+                    writer.write(f"{self.nickname}: {message}\n".encode())
+                    await writer.drain()
+                    self.message_history.append(f"Me: {message}")
+                    self.print_messages()
+                    self.input.value = ""
+            except asyncio.CancelledError:
+                break
 
-    @work(exclusive=True)
     async def start_client(self, server_ip, server_port, nickname):
-        self.nickname = nickname
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            self.client_socket.connect((server_ip, server_port))
-        except Exception as e:
-            self.text_area.insert(f"Error connecting to server: {e}")
-            return
+        self.reader, self.writer = await asyncio.open_connection(server_ip, server_port)
+        self.writer.write(f"/nick {nickname}\n".encode())
+        await self.writer.drain()
 
-        receive_thread = threading.Thread(target=self.receive_messages, args=(self.client_socket,))
-        receive_thread.daemon = True
-        receive_thread.start()
+        self.receive_task = asyncio.create_task(self.handle_server(self.reader))
+        self.send_task = asyncio.create_task(self.send_message(self.writer))
+
+    def print_messages(self):
+        self.text_area.clear()
+        for message in self.message_history:
+            self.text_area.insert(f"{message}\n")
 
     async def on_input_submitted(self, event: Input.Submitted):
-        message = event.value
-        if message:
-            if message == '/quit':
-#                self.client_socket.send(f"{self.nickname} has left the chat.".encode('utf-8'))
-#                self.client_socket.close()
-                self.app.push_screen("TerminalScreen")
-            else:
-                self.client_socket.send(f"{self.nickname}: {message}".encode('utf-8'))
-                self.text_area.insert(f"Me: {message}\n")
-                self.input.value = ""
+        await self.input_value.set(event.value)
 
-
+    async def on_unmount(self):
+        self.receive_task.cancel()
+        self.send_task.cancel()
+        await self.writer.wait_closed()
 
