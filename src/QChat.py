@@ -57,6 +57,8 @@ class IRCScreen(Screen):
         if message == '/quit':
             await self.quit_client()
         elif message:
+            if message.startswith("/nick"):
+                self.nickname = message.split(" ", 1)[1]
             await self.send_message(self.writer, message)
             self.input.value = ""
 
