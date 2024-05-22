@@ -11,6 +11,8 @@ class IRCScreen(Screen):
     channels = ["#qchat", "#market", "#help"]
     current_channel = "#qchat"
 
+    AUTO_FOCUS = "#ircinput"
+
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
         self.text_area.read_only = True
