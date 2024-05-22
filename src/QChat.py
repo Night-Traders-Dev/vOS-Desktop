@@ -8,6 +8,7 @@ from textual import events, on
 
 class IRCScreen(Screen):
     nickname = "user" +  str(random.randint(0, 999999))
+    channels = ["#qchat", "#market", "#help"]
     current_channel = "#qchat"
 
     def compose(self) -> ComposeResult:
@@ -60,16 +61,22 @@ class IRCScreen(Screen):
 
     async def on_input_submitted(self, event: Input.Submitted):
         message = event.value
+        send_message = True
         if message == '/quit':
             await self.quit_client()
         elif message:
             if message.startswith('/nick'):
                 self.input.placeholder = message.split(" ", 1)[1]
             elif message.startswith('/join'):
-                self.current_channel = message.split(" ", 1)[1]
-                self.text_area.border_subtitle = f"Channel: {self.current_channel}"
-            await self.send_message(self.writer, message)
-            self.input.value = ""
+                if message.split(" ", 1)[1] not in self.channels:
+                    self.text_area.insert(f'{message.split(" ", 1)[1]} not a channel\n')
+                    send_message = False
+                else:
+                    self.current_channel = message.split(" ", 1)[1]
+                    self.text_area.border_subtitle = f"Channel: {self.current_channel}"
+            if send_message:
+                await self.send_message(self.writer, message)
+                self.input.value = ""
 
 
     async def quit_client(self):
