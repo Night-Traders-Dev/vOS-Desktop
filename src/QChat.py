@@ -7,7 +7,7 @@ from textual.containers import Vertical
 from textual import events, on
 
 class IRCScreen(Screen):
-    nickname = "user" +  str(random.randint(0, 9999))
+    nickname = "user" +  str(random.randint(0, 999999))
 
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
