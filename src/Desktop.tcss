@@ -183,12 +183,13 @@ IRCScreen {
 
 #ircoutput {
     color: rgb(44, 0, 30);
-    height: 60%;
+    height: 80%;
     width: 100%;
     margin-left: 2;
     margin-right: 2;
     max-width: 95vw;
     border: double rgb(119, 41, 83);
-    align: center top;                                                        padding: 2 2;
+    align: center top;
+    padding: 2 2;
     scrollbar-color: rgb(237, 118, 77);
 }
