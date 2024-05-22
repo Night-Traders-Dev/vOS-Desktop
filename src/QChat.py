@@ -14,6 +14,8 @@ class IRCScreen(Screen):
         self.text_area.read_only = True
         self.text_area.cursor_blink = False
         self.text_area.theme = "vscode_dark"
+        self.text_area.border_title = "QChat"
+        self.text_area.border_subtitle = "vOS IRC"
         self.input = Input(placeholder=f"{self.nickname}: ", id="ircinput")
         with Vertical():
             yield self.text_area
