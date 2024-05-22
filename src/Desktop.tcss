@@ -198,3 +198,31 @@ IRCScreen {
     # This hides the scrollbar
     scrollbar-size: 0 0;
 }
+
+WalletScreen {
+    layers: one two;
+    layer: two;
+    align: center middle;
+    content-align: center middle;
+    background: rgb(94, 39, 80);
+    layout: grid;
+    grid-rows: 1fr 9fr;
+    grid-columns: 1fr 9fr;
+    width: 1fr;
+    height: 1fr;
+
+}
+
+
+#wallet {
+    width: 30;
+    height: auto;
+    margin: 2 2;
+    layer: two;
+}
+
+#qse {
+    padding: 1 2;
+    layer: two;
+}
+

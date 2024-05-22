@@ -63,11 +63,14 @@ class LoginPrompt(Input):
 
 
 class LoginScreen(Screen):
+    AUTO_FOCUS = "#userprompt"
 
 
     def compose(self) -> ComposeResult:
         yield TopBar(id="topbar")
         yield Label("vOS Login", id="LoginLabel")
-        yield LoginPrompt(id="userprompt")
+        self.loginprompt = LoginPrompt(id="userprompt")
+        yield self.loginprompt
+        self.loginprompt.focus()
 
 

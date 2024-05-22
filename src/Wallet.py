@@ -1,12 +1,25 @@
+from textual import on, events
 from textual.app import App, ComposeResult
 from textual.containers import HorizontalScroll
 from textual.reactive import reactive
-from textual.widgets import Footer, Placeholder
+from textual.geometry import Region
+from textual.widgets import Placeholder, Static, Label, ListView, ListItem
+
 
 PAGES_COUNT = 3
 
 
-class PagesApp(App):
+
+class Wallet(Static):
+
+    def compose(self) -> ComposeResult:
+        yield Label("Wallet\n0 QSE", id="qse")
+        yield ListView(
+            ListItem(Label("QSE: 0", id="qse"), id="wallet")
+            )
+
+
+class WalletScreen(App):
     BINDINGS = [
         ("ctrl+right", "next", "Next"),
         ("ctrl+left", "previous", "Previous"),
@@ -20,7 +33,7 @@ class PagesApp(App):
         with HorizontalScroll(id="page-container"):
             for page_no in range(PAGES_COUNT):
                 if page_no == 0:
-                    yield Placeholder(f"Wallet", id=f"page-{page_no}")
+                    yield Wallet(id=f"page-{page_no}")
                 elif page_no == 1:
                     yield Placeholder(f"Transactions", id=f"page-{page_no}")
                 else:
@@ -41,12 +54,14 @@ class PagesApp(App):
     ) -> bool | None:  
         """Check if an action may run."""
         if action == "next" and self.page_no == PAGES_COUNT - 1:
+            self.notify("End of the line", title="vOS Notification", timeout=1)
             return False
         if action == "previous" and self.page_no == 0:
+            self.notify("End of the line", title="vOS Notification", timeout=1)
             return False
         return True
 
 
 if __name__ == "__main__":
-    app = PagesApp()
+    app = WalletScreen()
     app.run()

@@ -7,11 +7,12 @@ from textual.containers import Vertical
 from textual import events, on
 
 class IRCScreen(Screen):
+    AUTO_FOCUS = "#ircinput"
+
     nickname = "user" +  str(random.randint(0, 999999))
     channels = ["#qchat", "#market", "#help"]
     current_channel = "#qchat"
 
-    AUTO_FOCUS = "#ircinput"
 
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
