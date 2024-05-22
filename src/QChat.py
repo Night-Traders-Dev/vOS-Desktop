@@ -31,6 +31,8 @@ class IRCScreen(Screen):
                 if not data:
                     break
                 message = data.decode().strip()
+                if "(private)" in message:
+                    self.notify("Private Message Received", title="vOS Notification")
                 self.message_history.append(message)
                 await self.update_messages()
         except asyncio.CancelledError:
