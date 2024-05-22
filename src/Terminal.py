@@ -29,6 +29,8 @@ class Terminal(TextArea):
                 self.app.exit()
             elif command.lower() == "qchat":
                 self.app.push_screen("QChat")
+            elif command.lower() == "screensaver":
+                self.app.push_screen("ScreenSaver")
             else:
                 pass
 
