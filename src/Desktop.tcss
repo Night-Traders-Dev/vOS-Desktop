@@ -193,3 +193,8 @@ IRCScreen {
     padding: 2 2;
     scrollbar-color: rgb(237, 118, 77);
 }
+
+#page-container {
+    # This hides the scrollbar
+    scrollbar-size: 0 0;
+}
