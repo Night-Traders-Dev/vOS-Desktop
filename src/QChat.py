@@ -8,6 +8,7 @@ from textual import events, on
 
 class IRCScreen(Screen):
     nickname = "user" +  str(random.randint(0, 999999))
+    current_channel = "#qchat"
 
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
@@ -15,7 +16,7 @@ class IRCScreen(Screen):
         self.text_area.cursor_blink = False
         self.text_area.theme = "vscode_dark"
         self.text_area.border_title = "QChat"
-        self.text_area.border_subtitle = "vOS IRC"
+        self.text_area.border_subtitle = f"Channel: {self.current_channel}"
         self.input = Input(placeholder=f"{self.nickname}: ", id="ircinput")
         with Vertical():
             yield self.text_area
@@ -66,6 +67,7 @@ class IRCScreen(Screen):
                 self.input.placeholder = message.split(" ", 1)[1]
             elif message.startswith('/join'):
                 self.current_channel = message.split(" ", 1)[1]
+                self.text_area.border_subtitle = f"Channel: {self.current_channel}"
             await self.send_message(self.writer, message)
             self.input.value = ""
 
