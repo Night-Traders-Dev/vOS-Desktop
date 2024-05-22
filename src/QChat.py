@@ -1,4 +1,5 @@
 import asyncio
+import random
 from textual.app import App, ComposeResult
 from textual.widgets import Input, TextArea
 from textual.screen import Screen
@@ -6,7 +7,7 @@ from textual.containers import Vertical
 from textual import events, on
 
 class IRCScreen(Screen):
-    nickname = "admin"
+    nickname = "user" +  str(random.randint(0, 9999))
 
     def compose(self) -> ComposeResult:
         self.text_area = TextArea(id="ircoutput")
@@ -20,7 +21,7 @@ class IRCScreen(Screen):
 
     async def on_mount(self):
         self.message_history = []
-        await self.start_client("192.168.254.1", 8001, self.nickname)
+        await self.start_client("71.29.176.68", 8001, self.nickname)
 
     async def handle_server(self, reader):
         try:
@@ -35,9 +36,8 @@ class IRCScreen(Screen):
             pass
 
     async def send_message(self, writer, message):
-        writer.write(f"{self.nickname}: {message}\n".encode())
+        writer.write(f"{message}\n".encode())
         await writer.drain()
-        self.message_history.append(f"Me: {message}")
         await self.update_messages()
 
     async def start_client(self, server_ip, server_port, nickname):
@@ -54,11 +54,46 @@ class IRCScreen(Screen):
 
     async def on_input_submitted(self, event: Input.Submitted):
         message = event.value
-        if message:
+        if message == '/quit':
+            await self.quit_client()
+        elif message:
             await self.send_message(self.writer, message)
             self.input.value = ""
 
-    async def on_unmount(self):
+
+    async def quit_client(self):
+        self.client_running = False
+        self.writer.write(f"{self.nickname} has left the chat.\n".encode())
+        await self.writer.drain()
+
+        # Close the writer and reader
+        self.writer.close()
+        try:
+            await asyncio.wait_for(self.writer.wait_closed(), timeout=3.0)
+        except asyncio.TimeoutError:
+            pass
+
         self.receive_task.cancel()
-        await self.writer.wait_closed()
+        try:
+            await self.receive_task
+        except asyncio.CancelledError:
+            pass
+
+        self.app.push_screen("TerminalScreen")
+
+    async def on_unmount(self):
+        if hasattr(self, 'receive_task'):
+            self.receive_task.cancel()
+            try:
+                await self.receive_task
+            except asyncio.CancelledError:
+                pass
+
+        if hasattr(self, 'writer'):
+            self.writer.close()
+            try:
+                await asyncio.wait_for(self.writer.wait_closed(), timeout=3.0)
+            except asyncio.TimeoutError:
+                pass
+
 

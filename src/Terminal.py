@@ -27,7 +27,7 @@ class Terminal(TextArea):
                 self.app.push_screen("DesktopBase")
             elif command == "shutdown":
                 self.app.exit()
-            elif command == "QChat":
+            elif command.lower() == "qchat":
                 self.app.push_screen("QChat")
             else:
                 pass
