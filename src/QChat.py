@@ -31,7 +31,7 @@ class IRCScreen(Screen):
                 if not data:
                     break
                 message = data.decode().strip()
-                if "(private)" in message:
+                if "(private)" in message and message.split()[1] != self.nickname:
                     self.notify("Private Message Received", title="vOS Notification")
                 self.message_history.append(message)
                 await self.update_messages()
