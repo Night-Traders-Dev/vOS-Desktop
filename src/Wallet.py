@@ -3,7 +3,7 @@ from textual.containers import HorizontalScroll
 from textual.reactive import reactive
 from textual.widgets import Footer, Placeholder
 
-PAGES_COUNT = 5
+PAGES_COUNT = 3
 
 
 class PagesApp(App):
@@ -19,7 +19,12 @@ class PagesApp(App):
     def compose(self) -> ComposeResult:
         with HorizontalScroll(id="page-container"):
             for page_no in range(PAGES_COUNT):
-                yield Placeholder(f"Page {page_no}", id=f"page-{page_no}")
+                if page_no == 0:
+                    yield Placeholder(f"Wallet", id=f"page-{page_no}")
+                elif page_no == 1:
+                    yield Placeholder(f"Transactions", id=f"page-{page_no}")
+                else:
+                    yield Placeholder(f"About", id=f"page-{page_no}")
 
     def action_next(self) -> None:
         self.page_no += 1
