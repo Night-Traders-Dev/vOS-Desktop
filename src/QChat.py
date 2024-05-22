@@ -21,6 +21,7 @@ class IRCScreen(Screen):
 
     async def on_mount(self):
         self.message_history = []
+        self.current_channel = '#qchat'
         await self.start_client("71.29.176.68", 8001, self.nickname)
 
     async def handle_server(self, reader):
@@ -57,8 +58,10 @@ class IRCScreen(Screen):
         if message == '/quit':
             await self.quit_client()
         elif message:
-            if message.startswith("/nick"):
-                self.nickname = message.split(" ", 1)[1]
+            if message.startswith('/nick'):
+                self.input.placeholder = message.split(" ", 1)[1]
+            elif message.startswith('/join'):
+                self.current_channel = message.split(" ", 1)[1]
             await self.send_message(self.writer, message)
             self.input.value = ""
 
