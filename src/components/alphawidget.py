@@ -73,8 +73,13 @@ class Alpha(Widget):
         rich_style = self.rich_style
         alpha = Alphabet(self._value, rich_style)  # Changed to use Alphabet
         text_align = self.styles.text_align
-        align = "left" if text_align not in {"left", "center", "right"} else text_align
-        return Align(alpha, cast(AlignMethod, align), rich_style)
+
+        # Determine the proper alignment
+        if text_align in {"left", "center", "right"}:
+            align = text_align
+        else:
+            align = "left"
+        return Align(alpha, align=align, style=rich_style)
 
     def get_content_width(self, container: Size, viewport: Size) -> int:
         """Called by textual to get the width of the content area.
