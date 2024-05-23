@@ -215,7 +215,7 @@ WalletScreen {
 
 
 #wallet {
-    offset-y: 2;
+    offset-y: 4;
     layer: two;
 }
 

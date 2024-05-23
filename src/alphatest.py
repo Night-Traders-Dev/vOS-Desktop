@@ -4,7 +4,7 @@ from components.alphawidget import Alpha as BlockDigits
 class HelloApp(App):
 
     def compose(self) -> ComposeResult:
-        alphabet = "HELLO"
+        alphabet = "Wallet"
 
         yield BlockDigits(alphabet)
 

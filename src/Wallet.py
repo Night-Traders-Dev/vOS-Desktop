@@ -4,6 +4,7 @@ from textual.containers import HorizontalScroll
 from textual.reactive import reactive
 from textual.geometry import Region
 from textual.widgets import Placeholder, Static, Label, ListView, ListItem
+from components.alphawidget import Alpha as BlockDigits                                       
 
 
 PAGES_COUNT = 3
@@ -13,7 +14,7 @@ PAGES_COUNT = 3
 class Wallet(Static):
 
     def compose(self) -> ComposeResult:
-        yield Label("Wallet: 0 QSE", id="header")
+        yield BlockDigits("wallet")
         yield ListView(
             ListItem(Label("QSE: 0", id="qse"), id="wallet"),
             id="wallet")
