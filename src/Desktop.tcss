@@ -199,53 +199,59 @@ IRCScreen {
     scrollbar-size: 0 0;
 }
 
+
+
 WalletScreen {
-    layers: one two;
-    layer: two;
-    align: center middle;
-    content-align: center middle;
-    background: rgb(94, 39, 80);
+    layers: one two three four;
     layout: grid;
-    grid-rows: 1fr 9fr;
-    grid-columns: 1fr 9fr;
-    width: 1fr;
-    height: 1fr;
+    grid-size: 1 3;
+    grid-rows: 1fr;
+    grid-columns: 1fr 1fr 1fr;
+    background: rgba(94, 39, 80, 0.08);
+    layer: one;
+}
+
+#wallet_balance {
+    layer: one;
+    height: auto;
 
 }
 
-
-#wallet {
-    offset-y: 8;
-    layer: two;
-}
-
-#qse {
-    padding: 1 2;
-    layer: two;
-    height: 5;
-}
-
-#header {
-    text-style: bold;
-    text-align: center;
-    align: center middle;
-    content-align: center middle;
+#qse_balance {
+    layer: one;
+    height: auto;
 }
 
 #WalletBanner {
-
+    align: center top;
+    dock: top;
     border: round rgb(233, 84, 32);
     text-align: center;
     color: rgb(119, 33, 111);
+    layer: one;
+    width: 1fr;
+    height: 90%;
+
 }
 
-.WalletButton {
+#WalletButton {
+    layer: one;
+    width: 1fr;
+    height: 10%;
+    background: rgba(51, 51, 51, 0.5);
     dock: bottom;
 }
 
-#send {
+#WalletButton .button.send {
+    height: auto;
     layer: one;
 }
-#receive {
+#WalletButton .button.receive {
+    height: auto;
     layer: one;
 }
+
+
+
+
+
