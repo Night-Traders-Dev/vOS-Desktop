@@ -88,6 +88,7 @@ class Alpha(Widget):
         """
         return Alphabet.get_width(self._value)
 
+
     def get_content_height(self, container: Size, viewport: Size, width: int) -> int:
         """Called by Textual to get the height of the content area.
 
@@ -99,4 +100,6 @@ class Alpha(Widget):
         Returns:
             The height of the content.
         """
-        return 5  # Always 3 lines
+        # Calculate the number of lines required to display the content
+        num_lines = (len(self._value) + len(self._value) // 5) * 3  # Each character occupies 3 lines vertically
+        return num_lines

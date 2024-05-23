@@ -2,16 +2,22 @@ from textual.app import App, ComposeResult
 from components.alphawidget import Alpha as BlockDigits
 
 class HelloApp(App):
+    CSS = """
+    Screen {
+        align: center middle;
+    }
+    .block-alphabet {
+        height: 20;
+        width: 12;
+        /* Define styling for the block alphabet here */
+    }
+    """
 
     def compose(self) -> ComposeResult:
-        alphabet = "H E L L O"
-        rendered_output = ""
+        alphabet = "HELLO"
 
-        for letter in alphabet:
-            rendered_output += letter + " "
-
-        yield BlockDigits(rendered_output)
-
+        for index, letter in enumerate(alphabet):
+            yield BlockDigits(letter, id=f"alpha-{letter.lower()}-{index}", classes="block-alphabet")
 
 if __name__ == "__main__":
     app = HelloApp()
