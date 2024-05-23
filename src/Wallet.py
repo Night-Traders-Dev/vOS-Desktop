@@ -1,10 +1,10 @@
 from textual import on, events
 from textual.app import App, ComposeResult
-from textual.containers import HorizontalScroll
+from textual.containers import HorizontalScroll, Vertical
 from textual.reactive import reactive
 from textual.geometry import Region
-from textual.widgets import Placeholder, Static, Label, ListView, ListItem
-from components.alphawidget import Alpha as BlockDigits                                       
+from textual.widgets import Placeholder, Static, Label, ListView, ListItem, Button
+from components.alphawidget import Alpha as BlockDigits
 
 
 PAGES_COUNT = 3
@@ -14,11 +14,12 @@ PAGES_COUNT = 3
 class Wallet(Static):
 
     def compose(self) -> ComposeResult:
-        yield BlockDigits("wallet")
+        yield BlockDigits("wallet", id="WalletBanner")
         yield ListView(
             ListItem(Label("QSE: 0", id="qse"), id="wallet"),
             id="wallet")
-
+        yield Button("Send", id="send", classes="WalletButton")
+        yield Button("Receive", id="receive", classes="WalletButton")
 
 class WalletScreen(App):
     BINDINGS = [

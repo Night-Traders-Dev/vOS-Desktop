@@ -79,9 +79,9 @@ ALPHABET5X3 = """
 █▄▄▀
 █  █
 
-▄▀▀▀█
+▄▀▀█
 █▄▄▀
- ▀▄▄▀
+▀▄▄
 
 ▀▀█▀▀
   █
@@ -111,7 +111,6 @@ ALPHABET5X3 = """
   ▄▀
 ▄▀▀▀
 """.splitlines()
-
 
 
 class Alphabet:

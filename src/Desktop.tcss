@@ -215,7 +215,7 @@ WalletScreen {
 
 
 #wallet {
-    offset-y: 4;
+    offset-y: 8;
     layer: two;
 }
 
@@ -232,3 +232,20 @@ WalletScreen {
     content-align: center middle;
 }
 
+#WalletBanner {
+
+    border: round rgb(233, 84, 32);
+    text-align: center;
+    color: rgb(119, 33, 111);
+}
+
+.WalletButton {
+    dock: bottom;
+}
+
+#send {
+    layer: one;
+}
+#receive {
+    layer: one;
+}
