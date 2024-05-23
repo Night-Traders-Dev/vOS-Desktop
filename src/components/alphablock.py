@@ -157,10 +157,10 @@ class Alphabet:
                 row3("    ")
                 row4("    ")
             else:
-                row1(ALPHABET5X3[position].ljust(4))
-                row2(ALPHABET5X3[position + 1].ljust(4))
-                row3(ALPHABET5X3[position + 2].ljust(4))
-                row4(ALPHABET5X3[position + 3].ljust(4))
+                row1(ALPHABET5X3[position].ljust(6))
+                row2(ALPHABET5X3[position + 1].ljust(6))
+                row3(ALPHABET5X3[position + 2].ljust(6))
+                row4(ALPHABET5X3[position + 3].ljust(6))
 
 
         new_line = Segment.line()
