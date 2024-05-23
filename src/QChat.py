@@ -6,6 +6,8 @@ from textual.screen import Screen
 from textual.containers import Vertical
 from textual import events, on
 
+
+
 class IRCScreen(Screen):
     AUTO_FOCUS = "#ircinput"
 
@@ -25,6 +27,7 @@ class IRCScreen(Screen):
         with Vertical():
             yield self.text_area
             yield self.input
+
 
     async def on_mount(self):
         self.message_history = []
@@ -116,5 +119,6 @@ class IRCScreen(Screen):
                 await asyncio.wait_for(self.writer.wait_closed(), timeout=3.0)
             except asyncio.TimeoutError:
                 pass
+
 
 

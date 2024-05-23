@@ -13,10 +13,10 @@ PAGES_COUNT = 3
 class Wallet(Static):
 
     def compose(self) -> ComposeResult:
-        yield Label("Wallet\n0 QSE", id="qse")
+        yield Label("Wallet: 0 QSE", id="header")
         yield ListView(
-            ListItem(Label("QSE: 0", id="qse"), id="wallet")
-            )
+            ListItem(Label("QSE: 0", id="qse"), id="wallet"),
+            id="wallet")
 
 
 class WalletScreen(App):

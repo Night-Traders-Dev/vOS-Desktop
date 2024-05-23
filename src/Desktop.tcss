@@ -215,14 +215,20 @@ WalletScreen {
 
 
 #wallet {
-    width: 30;
-    height: auto;
-    margin: 2 2;
+    offset-y: 2;
     layer: two;
 }
 
 #qse {
     padding: 1 2;
     layer: two;
+    height: 5;
+}
+
+#header {
+    text-style: bold;
+    text-align: center;
+    align: center middle;
+    content-align: center middle;
 }
 
