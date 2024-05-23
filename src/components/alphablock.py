@@ -142,10 +142,11 @@ class Alphabet:
         Returns:
             Result of render.
         """
-        letter_pieces: list[list[str]] = [[], [], []]
+        letter_pieces: list[list[str]] = [[], [], [], []]
         row1 = letter_pieces[0].append
         row2 = letter_pieces[1].append
         row3 = letter_pieces[2].append
+        row4 = letter_pieces[3].append
 
         for character in self._text:
             try:
@@ -154,15 +155,19 @@ class Alphabet:
                 row1("    ")
                 row2("    ")
                 row3("    ")
+                row4("    ")
             else:
                 row1(ALPHABET5X3[position].ljust(4))
                 row2(ALPHABET5X3[position + 1].ljust(4))
                 row3(ALPHABET5X3[position + 2].ljust(4))
+                row4(ALPHABET5X3[position + 3].ljust(4))
+
 
         new_line = Segment.line()
         for line in letter_pieces:
             yield Segment("".join(line), style)
             yield new_line
+
 
     @classmethod
     def get_width(cls, text: str) -> int:

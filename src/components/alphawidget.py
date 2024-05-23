@@ -7,7 +7,7 @@ from rich.align import Align, AlignMethod
 if TYPE_CHECKING:
     from textual.app import RenderResult
 from textual.geometry import Size
-from components.alphablock import Alphabet  # Changed import statement
+from components.alphablock import Alphabet
 from textual.widget import Widget
 
 class Alpha(Widget):
@@ -71,7 +71,7 @@ class Alpha(Widget):
     def render(self) -> RenderResult:
         """Render alpha."""
         rich_style = self.rich_style
-        alpha = Alphabet(self._value, rich_style)  # Changed to use Alphabet
+        alpha = Alphabet(self._value, rich_style)
         text_align = self.styles.text_align
 
         # Determine the proper alignment
@@ -93,6 +93,8 @@ class Alpha(Widget):
         """
         return Alphabet.get_width(self._value)
 
+
+
     def get_content_height(self, container: Size, viewport: Size, width: int) -> int:
         """Called by Textual to get the height of the content area.
 
@@ -104,6 +106,9 @@ class Alpha(Widget):
         Returns:
             The height of the content.
         """
+        # Get the height of a single alphabet block
+        alphabet_height = 3  # Adjust this if necessary
+
         # Calculate the number of lines required to display the content
-        num_lines = (len(self._value) + len(self._value) // 5) * 3  # Each character occupies 3 lines vertically
-        return num_lines
+        num_lines = (len(self._value) + len(self._value) // 5) * alphabet_height
+        return 5
