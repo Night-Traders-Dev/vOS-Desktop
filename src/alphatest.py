@@ -7,8 +7,8 @@ class HelloApp(App):
         align: center middle;
     }
     .block-alphabet {
-        height: 20;
-        width: 12;
+        height: 15;  /* Adjusted height for 5x3 */
+        width: 9;    /* Adjusted width for 5x3 */
         /* Define styling for the block alphabet here */
     }
     """

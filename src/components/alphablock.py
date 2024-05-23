@@ -113,6 +113,7 @@ ALPHABET5X3 = """
 """.splitlines()
 
 
+
 class Alphabet:
     """Renders a 5x3 unicode 'font' for alphabet values.
 
@@ -148,15 +149,15 @@ class Alphabet:
 
         for character in self._text:
             try:
-                position = ALPHABET.index(character) * 3
+                position = ALPHABET.index(character) * 4
             except ValueError:
-                row1("   ")
-                row2("   ")
-                row3("   ")
+                row1("    ")
+                row2("    ")
+                row3("    ")
             else:
-                row1(ALPHABET5X3[position].ljust(3))
-                row2(ALPHABET5X3[position + 1].ljust(3))
-                row3(ALPHABET5X3[position + 2].ljust(3))
+                row1(ALPHABET5X3[position].ljust(4))
+                row2(ALPHABET5X3[position + 1].ljust(4))
+                row3(ALPHABET5X3[position + 2].ljust(4))
 
         new_line = Segment.line()
         for line in letter_pieces:
@@ -173,7 +174,7 @@ class Alphabet:
         Returns:
             Width of the text (in cells).
         """
-        width = sum(3 if character in ALPHABET else 1 for character in text)
+        width = sum(4 if character in ALPHABET else 1 for character in text)
         return width
 
     def __rich_measure__(

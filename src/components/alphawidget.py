@@ -88,7 +88,6 @@ class Alpha(Widget):
         """
         return Alphabet.get_width(self._value)
 
-
     def get_content_height(self, container: Size, viewport: Size, width: int) -> int:
         """Called by Textual to get the height of the content area.
 
