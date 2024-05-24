@@ -246,10 +246,10 @@ WalletScreen {
     height: auto;
     layer: one;
 }
-#WalletButton .button.receive {
-    height: auto;
-    layer: one;
-}
+/*#WalletButton .button.receive {*/
+/*    height: auto;*/
+/*    layer: one;*/
+/*}*/
 
 
 
