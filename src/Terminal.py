@@ -21,20 +21,39 @@ class Terminal(TextArea):
             command = str(command).strip("$ ")
             self.insert("\n" + command + "\n$ ")
             event.prevent_default()
-            if command == "exit":
-                self.clear()
-                self.insert("\n" + command + "\n$ ")
-                self.app.push_screen("DesktopBase")
-            elif command == "shutdown":
-                self.app.exit()
-            elif command.lower() == "qchat":
-                self.app.push_screen("QChat")
-            elif command.lower() == "screensaver":
-                self.app.push_screen("ScreenSaver")
-            else:
-                pass
+            self.handle_command(command.lower())
 
+    def handle_command(self, command: str):
+        # Dictionary mapping commands to their handler functions
+        command_handlers = {
+            "exit": self.handle_exit,
+            "shutdown": self.handle_shutdown,
+            "qchat": self.handle_qchat,
+            "screensaver": self.handle_screensaver
+        }
 
+        # Get the handler function from the dictionary
+        handler = command_handlers.get(command, self.handle_unknown_command)
+        # Call the handler function
+        handler()
+
+    def handle_exit(self):
+        self.clear()
+        self.insert("\nexit\n$ ")
+        self.app.push_screen("DesktopBase")
+
+    def handle_shutdown(self):
+        self.app.exit()
+
+    def handle_qchat(self):
+        self.app.push_screen("QChat")
+
+    def handle_screensaver(self):
+        self.app.push_screen("ScreenSaver")
+
+    def handle_unknown_command(self):
+        # Handle unknown command (you can customize this)
+        self.insert("\nUnknown command\n$ ")
 
 class TerminalScreen(Screen):
 
@@ -43,6 +62,3 @@ class TerminalScreen(Screen):
     def compose(self) -> ComposeResult:
         yield TopBar(id="topbar")
         yield Terminal.code_editor(language="python")
-
-
-
