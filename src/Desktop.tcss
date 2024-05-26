@@ -201,25 +201,14 @@ IRCScreen {
 
 
 
-WalletScreen {
-    layers: one two three four;
-    layout: grid;
-    grid-size: 1 3;
-    grid-rows: 1fr;
-    grid-columns: 1fr 1fr 1fr;
-    background: rgba(94, 39, 80, 0.08);
-    layer: one;
-}
 
 #wallet_balance {
-    layer: one;
-    height: auto;
+    height: 4;
 
 }
 
 #qse_balance {
-    layer: one;
-    height: auto;
+    height: 3;
 }
 
 #WalletBanner {
@@ -228,30 +217,18 @@ WalletScreen {
     border: round rgb(233, 84, 32);
     text-align: center;
     color: rgb(119, 33, 111);
-    layer: one;
-    width: 1fr;
-    height: 90%;
 
 }
 
 #WalletButton {
-    layer: one;
-    width: 1fr;
-    height: 10%;
-    background: rgba(51, 51, 51, 0.5);
+    height: 3;
     dock: bottom;
-}
-
-#WalletButton .button.send {
-    height: auto;
-    layer: one;
-}
-/*#WalletButton .button.receive {*/
-/*    height: auto;*/
-/*    layer: one;*/
-/*}*/
-
-
-
-
-
+    & > * {
+        width: 10;
+     }
+    .button.send {
+        dock: left;
+    }
+    .button.receive {
+        dock: right;
+}}

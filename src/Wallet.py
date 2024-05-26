@@ -1,58 +1,27 @@
 from textual import on, events
 from textual.app import App, ComposeResult
-from textual.containers import HorizontalScroll, Horizontal, Container
+from textual.containers import Horizontal, HorizontalScroll, Container
 from textual.reactive import reactive
 from textual.widgets import Placeholder, Static, Label, ListView, ListItem, Button
-from textual.events import Resize
-from textual.geometry import Region, Size
 from components.alphawidget import Alpha as BlockDigits
 
 
 PAGES_COUNT = 3
 
-class Receive(Button):
-    def update_offset(self, x: int, y: int) -> None:
-        """Update the widget's offset based on the new width and height."""
-        # Calculate the new offset
-        if x != 0:
-            new_offset_x = x - 6
-        else:
-            new_offset_x = 0
-        if y != 0:
-            new_offset_y = y - 15
-        else:
-            new_offset_y = 0
-        self.styles.offset = (new_offset_x, new_offset_y)
 
 class Wallet(Static):
 
     def compose(self) -> ComposeResult:
        self.WalletPage = Container(id="WalletPage")
        with self.WalletPage:
-#            yield BlockDigits("wallet", id="WalletBanner")
-#            yield ListView(
-#                ListItem(Label("QSE: 0", id="qse_balance")),
-#                id="user_balance")
+            yield BlockDigits("wallet", id="WalletBanner")
+            yield ListView(
+                ListItem(Label("QSE: 0", id="qse_balance")),
+                id="user_balance")
             with Horizontal(id="WalletButton"):
                 yield Button("Send", classes="button send")
-                self.Receive = Receive("Receive")
-                yield self.Receive
-                self.info = Label(f"Widget: {self.Receive.region}\nContainer: {self.WalletPage.size}")
-                yield self.info
+                yield Button("Receive", classes="button receive")
 
-
-    def on_resize(self, event: Resize) -> None:
-        # Handle the resize event and update the widget's offset
-        x, y = self.WalletPage.size
-        self.Receive.update_offset((x), (y))
-        self.info.update(f"Widget: {self.Receive.region}\nContainer: {self.WalletPage.size}")
-        self.refresh()
-
-    def on_mount(self) -> None:
-        # Initial offset update when the app is first mounted
-        x, y = self.WalletPage.size
-        self.Receive.update_offset((x - x), (y - y))
-        self.refresh()
 
 class WalletScreen(App):
     BINDINGS = [
