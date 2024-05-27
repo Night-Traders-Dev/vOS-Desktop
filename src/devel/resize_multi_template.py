@@ -32,8 +32,10 @@ class ResizeApp(App):
     def compose(self) -> ComposeResult:
         self.resizable_widget = ResizableWidget(label=f"widget-{random.randint(0, 9999)}")
         self.info = Label()
+        self.resizable_widget.styles.width = 10
         yield self.resizable_widget
         yield self.info
+
         self.widgets.append(self.resizable_widget)  # Add initial widget to the list
         self.update_info()
 
@@ -48,6 +50,7 @@ class ResizeApp(App):
         if len(self.widgets) < 10:  # Limit to 10 widgets
             new_widget = ResizableWidget(label=f"widget-{random.randint(0, 9999)}")
             self.mount(new_widget)
+            new_widget.styles.width = 10
             self.widgets.append(new_widget)  # Add new widget to the list
             self.update_info()  # Update info after adding a new widget
 
