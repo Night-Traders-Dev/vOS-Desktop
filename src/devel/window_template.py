@@ -5,24 +5,10 @@ from textual.geometry import Offset
 from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Static
-import asyncio
+from random import randint
 
 class BarContainer(Container):
     """Topbar Container"""
-#    time = reactive(0)
-
-#    def update_timer(self) -> None:
-#        self.time += 1
-
-#    def watch_time(self, time: int) -> None:
-#        if time == 3:
-#            self.timer.pause()
-#            self.time = 0
-#            self.parent.remove()
-
-#    def on_mount(self) -> None:
-#        self.timer = self.set_interval(1, self.update_timer)
-
     def on_click(self, event: Click) -> None:
         self.parent.remove()
 
@@ -88,7 +74,9 @@ class Window(Vertical):
 class WindowTemplate(App[None]):
     def compose(self) -> ComposeResult:
         x, y = self.size
-        yield Window((x - 22), (y - 6), 20, 5, f"\nSome cool notification", "Notification", "notification") 
+        win_x = randint(0, (x - 30))
+        win_y = randint(0, (y - 20))
+        yield Window((win_x), (win_y), 30, 20, f"\nBasic Window Content", "vOS UI", "window") 
 
 if __name__ == "__main__":
     WindowTemplate().run()
