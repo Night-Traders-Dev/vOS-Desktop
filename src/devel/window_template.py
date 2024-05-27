@@ -1,16 +1,38 @@
 from textual.app import App, ComposeResult
 from textual.containers import Container, Vertical
+from textual.css.scalar import ScalarOffset, Scalar, Unit
 from textual.events import Click
 from textual.geometry import Offset
 from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Static
 from random import randint
+from time import time
 
 class BarContainer(Container):
     """Topbar Container"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.last_click_time = 0
+        self.double_click_threshold = 0.3
+
     def on_click(self, event: Click) -> None:
-        self.parent.remove()
+        current_time = time()
+        time_since_last_click = current_time - self.last_click_time
+
+        if time_since_last_click <= self.double_click_threshold:
+            self.on_double_click(event)
+        else:
+            self.on_single_click(event)
+
+        self.last_click_time = current_time
+
+    def on_single_click(self, event: Click) -> None:
+        pass
+
+    def on_double_click(self, event: Click) -> None:
+        if self.parent:
+            self.parent.remove()
 
 class TitleText(Static):
     """TitleText Widget"""
@@ -35,7 +57,6 @@ class Window(Vertical):
 
     Window #title  {
         dock: top;
-
     }
     """
 
@@ -70,6 +91,8 @@ class Window(Vertical):
     def compose(self) -> ComposeResult:
         with BarContainer(id="title-bar"):
             yield TitleText(f" [bold]{self.title}[/bold]", id="title")
+
+
 
 class WindowTemplate(App[None]):
     def compose(self) -> ComposeResult:
