@@ -2,15 +2,26 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, Vertical
 from textual.events import Click
 from textual.geometry import Offset
+from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Static
 import asyncio
 
 class BarContainer(Container):
     """Topbar Container"""
+    time = reactive(0)
 
-    async def on_ready(self) -> None:
-        self.set_interval(5, self.parent.remove())
+    def update_timer(self) -> None:
+        self.time += 1
+
+    def watch_time(self, time: int) -> None:
+        if time == 3:
+            self.timer.pause()
+            self.time = 0
+            self.parent.remove()
+
+    def on_mount(self) -> None:
+        self.timer = self.set_interval(1, self.update_timer)
 
     def on_click(self, event: Click) -> None:
         self.parent.remove()
