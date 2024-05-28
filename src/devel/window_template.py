@@ -64,6 +64,14 @@ class BarContainer(Container):
 
 class TitleText(Static):
     """TitleText Widget"""
+    def on_resize(self) -> None:
+        bounds = shutil.get_terminal_size()
+        title_bar = self.parent.parent.query_one("#title-bar")
+        title_text = title_bar.query_one("#title")
+        if title_bar.is_maximized:
+            title_text.styles.content_align = ("center", "top")
+        else:
+            title_text.styles.content_align = ("right", "top")
 
 class Window(Vertical):
 
@@ -85,6 +93,7 @@ class Window(Vertical):
 
     Window #title  {
         dock: top;
+/*        content-align: right top;*/
     }
     """
 
