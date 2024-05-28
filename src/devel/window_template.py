@@ -29,7 +29,7 @@ class BarContainer(Container):
         if time_since_last_click <= self.double_click_threshold:
             self.on_double_click(event)
         else:
-            self.resize_timer = self.set_timer(0.5, self.on_single_click)
+            self.resize_timer = self.set_timer(0.25, self.on_single_click)
             self.resize_timer = None
 
         self.last_click_time = current_time
@@ -85,7 +85,7 @@ class Window(Vertical):
     }
      Window #title-bar {
         width: 100%;
-        height: 1.25;
+        height: 1.50;
         background: rgba(51, 51, 51, 0.50);
         dock: top;
         layout: horizontal;
@@ -105,6 +105,11 @@ class Window(Vertical):
         self.label = label
         self.title = title
         self.id = id
+
+
+    def on_mount(self) -> None:
+        self.styles.animate("width", value=30, duration=1/6)
+        self.styles.animate("height", value=20, duration=1/6)
 
 
     def render(self) -> str:
@@ -143,7 +148,7 @@ class WindowTemplate(App[None]):
             x, y = self.size
             win_x = randint(0, (x - 30))
             win_y = randint(0, (y - 20))
-            self.mount(Window((win_x), (win_y), 30, 20, f"\nBasic Window Content", "vOS UI", "window"))
+            self.mount(Window((win_x), (win_y), 0, 0, f"\nBasic Window Content", "vOS UI", "window"))
 
 
 if __name__ == "__main__":
