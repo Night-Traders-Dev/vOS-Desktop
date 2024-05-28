@@ -93,7 +93,7 @@ class Window(Vertical):
 
     Window #title  {
         dock: top;
-/*        content-align: right top;*/
+        content-align: right top;
     }
     """
 
