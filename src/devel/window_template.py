@@ -132,11 +132,19 @@ class Window(Vertical):
 
 
 class WindowTemplate(App[None]):
-    def compose(self) -> ComposeResult:
-        x, y = self.size
-        win_x = randint(0, (x - 30))
-        win_y = randint(0, (y - 20))
-        yield Window((win_x), (win_y), 30, 20, f"\nBasic Window Content", "vOS UI", "window") 
+
+    def on_mount(self) -> None:
+        self.notify("Press tap or click anywhere to open a test window")
+    def on_click(self) -> None:
+        try:
+            if self.query_one("#window"):
+                pass
+        except:
+            x, y = self.size
+            win_x = randint(0, (x - 30))
+            win_y = randint(0, (y - 20))
+            self.mount(Window((win_x), (win_y), 30, 20, f"\nBasic Window Content", "vOS UI", "window"))
+
 
 if __name__ == "__main__":
     WindowTemplate().run()
