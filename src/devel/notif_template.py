@@ -90,10 +90,3 @@ class Window(Vertical):
         self.styles.animate("height", value=5, duration=1/6)
 
 
-class WindowTemplate(App[None]):
-    def compose(self) -> ComposeResult:
-        x, y = self.size
-        yield Window((x - 22), (y - 6), 0, 0, f"\nSome cool notification", "Notification", "notification") 
-
-if __name__ == "__main__":
-    WindowTemplate().run()

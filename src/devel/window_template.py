@@ -12,6 +12,8 @@ from threading import Timer
 import shutil
 
 
+from notif_template import Window as Notif
+
 
 class BarContainer(Container):
     """Topbar Container"""
@@ -139,7 +141,8 @@ class Window(Vertical):
 class WindowTemplate(App[None]):
 
     def on_mount(self) -> None:
-        self.notify("Press tap or click anywhere to open a test window")
+        x, y = self.size
+        self.mount(Notif((x - 22), (y - 6), 0, 0, f"\nClick/Tap anywhere to open Window", "Notification", "notification"))
     def on_click(self) -> None:
         try:
             if self.query_one("#window"):
