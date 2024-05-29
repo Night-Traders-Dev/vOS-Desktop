@@ -18,7 +18,9 @@ class BarContainer(Container):
         if time == 3:
             self.timer.pause()
             self.time = 0
-            self.parent.remove()
+            self.parent.styles.animate("width", value=0, duration=1/6)
+            self.parent.styles.animate("height", value=0, duration=1/6)
+            self.parent.styles.animate("opacity", value=0.0, duration=1/6, on_complete=self.remove)
 
     def on_mount(self) -> None:
         self.timer = self.set_interval(1, self.update_timer)
@@ -74,16 +76,24 @@ class Window(Vertical):
         title_text.update(f" [bold]{new_title}[/bold]")
 
     async def _on_click(self, event: Click) -> None:
-        self.remove()
+        self.styles.animate("width", value=0, duration=1/6)
+        self.styles.animate("height", value=0, duration=1/6)
+        self.styles.animate("opacity", value=0.0, duration=1/6, on_complete=self.remove)
+
 
     def compose(self) -> ComposeResult:
         with BarContainer(id="title-bar"):
             yield TitleText(f" [bold]{self.title}[/bold]", id="title")
 
+    def on_mount(self) -> None:
+        self.styles.animate("width", value=20, duration=1/6)
+        self.styles.animate("height", value=5, duration=1/6)
+
+
 class WindowTemplate(App[None]):
     def compose(self) -> ComposeResult:
         x, y = self.size
-        yield Window((x - 22), (y - 6), 20, 5, f"\nSome cool notification", "Notification", "notification") 
+        yield Window((x - 22), (y - 6), 0, 0, f"\nSome cool notification", "Notification", "notification") 
 
 if __name__ == "__main__":
     WindowTemplate().run()
