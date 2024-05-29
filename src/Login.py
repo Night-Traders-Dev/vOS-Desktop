@@ -3,6 +3,7 @@ from components.topbar import Clock, TopBar
 from textual.widgets import Input, Label, Static
 from textual.screen import Screen
 from textual import on, events
+from components.notif import Window as Notif
 #from vapi.vapi import passwordtools_instance
 #from vapi.vapi import fs_instance
 
@@ -23,6 +24,7 @@ class LoginPrompt(Input):
     @on(Input.Submitted)
     def collect_and_send(self, event: Input.Submitted):
         global username, password
+        x, y = self.screen.size
         if not self.password:
             username = event.value
             if username != "":
@@ -30,22 +32,21 @@ class LoginPrompt(Input):
                 self.placeholder = "Password"
                 self.value = ""
             else:
-                self.notify("Username Required", title="vOS Notification", severity="warning", timeout = 1.25)
+                self.parent.mount(Notif((x - 22), (y - 6), 0, 0, "Username Required", "vOS Notification"))
         else:
             password = event.value
             if password != "":
                 if self.auth():
-                    self.notify(f"{username} logged in.", title="vOS Notification")
                     self.app.push_screen("DesktopBase")
                 else:
-                    self.notify("Account Not Found", title="vOS Notification", severity="warning", timeout = 1.25)
+                    self.parent.mount(Notif((x - 22), (y - 6), 0, 0, "Account Not Found", "vOS Notification"))
                     username = ""
                     password = ""
                     self.value = ""
                     self.password = False
                     self.placeholder = "Username"
             else:
-                self.notify("Password Required", title="vOS Notification", severity="warning", timeout = 1.25)
+                self.parent.mount(Notif((x - 22), (y - 6), 0, 0, "Password Required", "vOS Notification"))
 
     def auth(self):
         if username == "admin" and password == "admin":
