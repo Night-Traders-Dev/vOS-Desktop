@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
-from textual.containers import Center, VerticalScroll
-from textual.widgets import Button, Header, Input, Label, ProgressBar
+from textual.containers import Center
+from textual.widgets import ProgressBar
 import os
 import subprocess
 import json
@@ -39,8 +39,27 @@ def get_battery_percentage():
 
 
 class FundingProgressApp(App[None]):
-    CSS_PATH = "progress_bar.tcss"
+    DEFAULT_CSS = """
 
+            Container {
+                overflow: hidden hidden;
+                height: auto;
+            }
+
+            Center {
+                margin-top: 1;
+                margin-bottom: 1;
+                layout: horizontal;
+            }
+            Bar {
+                width: 10;
+            }
+
+            ProgressBar {
+                padding-left: 3;
+                color: rgb(233, 84, 32);
+            }
+            """
     def compose(self) -> ComposeResult:
         with Center():
             yield ProgressBar(total=100, show_eta=False)  
