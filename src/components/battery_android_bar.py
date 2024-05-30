@@ -1,6 +1,5 @@
-from textual.app import App, ComposeResult
-from textual.containers import Center
 from textual.widgets import ProgressBar
+from textual import on, work
 import os
 import subprocess
 import json
@@ -38,43 +37,35 @@ def get_battery_percentage():
 
 
 
-class FundingProgressApp(App[None]):
+class BatteryBar(ProgressBar):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.total = 100
+        self.show_eta = False
+
+
     DEFAULT_CSS = """
 
-            Container {
-                overflow: hidden hidden;
-                height: auto;
-            }
-
-            Center {
-                margin-top: 1;
-                margin-bottom: 1;
-                layout: horizontal;
-            }
-            Bar {
-                width: 10;
-            }
-
-            ProgressBar {
-                padding-left: 3;
+            BatteryBar {
+/*                padding-left: 3;*/
                 color: rgb(233, 84, 32);
             }
+            BatteryBar Bar {
+                width: 4;
+            }
             """
-    def compose(self) -> ComposeResult:
-        with Center():
-            yield ProgressBar(total=100, show_eta=False)  
 
 
     def on_mount(self) -> None:
         battery = get_battery_percentage()
-        self.query_one(ProgressBar).update(progress=battery)
-        self.set_interval(10, self.update_battery)
+        self.update(progress=battery)
+        self.set_interval(60, self.update_battery)
+    @work(thread=True)
     def update_battery(self) -> None:
         battery = get_battery_percentage()
-        current = self.query_one(ProgressBar).percentage * 100
-        self.query_one(ProgressBar).update(progress=battery)
+        self.update(progress=battery)
 
 
 
-if __name__ == "__main__":
-    FundingProgressApp().run()
+
+

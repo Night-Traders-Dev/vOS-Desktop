@@ -48,9 +48,15 @@ LoadingIndicator {
     dock: top;
     layer: three;
     content-align: center top;
+
 }
 
-
+BatteryBar {
+    offset-x: -1;
+    offset-y: 1;
+    dock: right;
+    layer: three;
+}
 
 DashScreen {
     background: rgba(191, 189, 183, 0.08);
