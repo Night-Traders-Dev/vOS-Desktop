@@ -11,5 +11,7 @@ Center {
 
 ProgressBar {
     padding-left: 3;
+    color: rgb(233, 84, 32);
+    background: rgb(119, 41, 83);
 }
 

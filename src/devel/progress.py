@@ -48,12 +48,12 @@ class FundingProgressApp(App[None]):
 
     def on_mount(self) -> None:
         battery = get_battery_percentage()
-        self.query_one(ProgressBar).advance(battery)
+        self.query_one(ProgressBar).update(progress=battery)
         self.set_interval(10, self.update_battery)
     def update_battery(self) -> None:
         battery = get_battery_percentage()
         current = self.query_one(ProgressBar).percentage * 100
-        self.query_one(ProgressBar).advance(-(current - battery))
+        self.query_one(ProgressBar).update(progress=battery)
 
 
 
