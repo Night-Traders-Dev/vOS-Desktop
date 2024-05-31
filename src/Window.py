@@ -1,19 +1,31 @@
-from components.window import Window
-from textual.app import App, ComposeResult
-from random import randint
+from textual.app import App
+from components.dashboard import Window
 
-class WindowTemplate(App[None]):
+class Dashboard(App[None]):
+
+    DEFAULT_CSS = """
+            WindowTemplate {
+                align: center middle;
+            }
+            """
 
     def on_click(self) -> None:
         try:
-            if self.query_one("#window"):
-                pass
-        except:
-            x, y = self.size
-            win_x = (x / 8)
-            win_y = (x / 8)
-            self.mount(Window((win_x), (win_y), 50, 20, f"", "vOS UI", "window"))
+            window = self.query_one("#window")
+            if window:
+                return
+        except Exception as e:
+            pass
 
+        screen_width, screen_height = self.size
+
+        center_x = screen_width // 2
+        center_y = screen_height // 2
+
+        center_x = center_x - (50 // 2)
+        center_y = center_y - (20 // 2)
+
+        self.mount(Window(center_x, center_y, 50, 20, f"\nTerm: {self.size}\nWindow: ({center_x}, {center_y})", "vOS UI", "window"))
 
 if __name__ == "__main__":
-    WindowTemplate().run()
+    Dashboard().run()

@@ -14,15 +14,18 @@ class ResizableWidget(Static):
     def on_mount(self) -> None:
         self.update(self.label)
 
-    def update_offset(self, x: int, y: int) -> None:                                                                                                 """Update the widget's offset based on the new width and height."""
+    def update_offset(self, x: int, y: int) -> None:
+        """Update the widget's offset based on the new width and height."""
         # Calculate the new offset
-        if x != 0:                                                                                                                                       new_offset_x = x - 6
+        if x != 0:
+            new_offset_x = x - 6
         else:
             new_offset_x = 0
         if y != 0:
             new_offset_y = y - 1
         else:
-            new_offset_y = 0                                                                                                                         self.styles.offset = (new_offset_x, new_offset_y)
+            new_offset_y = 0
+            self.styles.offset = (new_offset_x, new_offset_y)
 
     def render(self) -> str:
         return self.label
