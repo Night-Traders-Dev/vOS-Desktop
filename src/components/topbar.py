@@ -1,13 +1,12 @@
 from textual.app import ComposeResult, RenderResult
 from textual import on, events
 from textual.widgets import Static
-from components.battery_android_bar import BatteryBar
 from components.os_check import EnvironmentChecker as os_check
+from components.battery_bar import BatteryBar
 from datetime import datetime
 
 class Clock(Static):
 
-    # Clock Method
     @on(events.Mount)
     def clock_timer(self) -> None:
         self.render()
@@ -24,5 +23,4 @@ class Clock(Static):
 class TopBar(Static):
     def compose(self) -> ComposeResult:
         yield Clock(id="clock")
-        if os_check.is_android() and os_check.is_termux() and os_check.is_proot():
-            yield BatteryBar()
+        yield BatteryBar()
