@@ -41,6 +41,18 @@ def get_battery_percentage():
                         return int(percentage)
         except Exception as e:
             return "0"
+    elif os_check.is_macos():
+         try:
+             result = subprocess.run(['pmset', '-g', 'batt'], stdout=subprocess.PIPE, text=True)
+             output = result.stdout
+
+             if output:
+                 for line in output.splitlines():
+                     if 'InternalBattery' in line:
+                         percentage = line.split(';')[1].strip().split('%')[0]
+                         return int(percentage)
+         except Exception as e:
+             return "0"
 
 
 
