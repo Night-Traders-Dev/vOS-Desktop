@@ -3,7 +3,7 @@ from textual.containers import Container, Vertical
 from textual.css.scalar import ScalarOffset, Scalar, Unit
 from textual.events import Click
 from textual.geometry import Offset, Region
-from textual.reactive import reactive
+from textual.reactive import Reactive
 from textual.widget import Widget
 from textual.widgets import Static
 from random import randint
@@ -41,13 +41,16 @@ class BarContainer(Container):
             height = bounds.lines
             x = 0
             y = 0
+            self.parent.styles.animate("width", value=width, duration=1/6)
+            self.parent.styles.animate("height", value=height, duration=1/6)
+            self.parent.styles.animate("offset", value=Window.get_center(width, height), duration=1/6)
             self.is_maximized = True
         else:
+            self.parent.styles.animate("width", value=50, duration=1/6)
+            self.parent.styles.animate("height", value=20, duration=1/6)
+            self.parent.styles.animate("offset", value=Window.get_center(50, 20), duration=1/6)
             self.is_maximized = False
 
-        self.parent.styles.animate("width", value=self.parent.width, duration=1/6)
-        self.parent.styles.animate("height", value=self.parent.height, duration=1/6)
-        self.parent.styles.animate("offset", value=Window.get_center(self.parent.width, self.parent.height), duration=1/6)
 
     def on_double_click(self, event: Click) -> None:
         if self.parent:
@@ -65,6 +68,9 @@ class TitleText(Static):
             title_text.styles.content_align = ("right", "top")
 
 class Window(Vertical):
+
+    current_screen_size: Reactive[tuple] = Reactive((0, 0))
+    previous_screen_size: Reactive[tuple] = Reactive((0, 0))
 
     DEFAULT_CSS = """
     Window {
@@ -119,11 +125,41 @@ class Window(Vertical):
 
         return new_offset
 
+    @staticmethod
+    def calculate_new_dimensions(old_screen_size, new_screen_size, old_widget_size):
+        old_screen_width, old_screen_height = old_screen_size
+        new_screen_width, new_screen_height = new_screen_size
+        old_widget_width, old_widget_height = old_widget_size
+
+        # Calculate the scale factor for width and height
+        width_scale = new_screen_width / old_screen_width
+        height_scale = new_screen_height / old_screen_height
+
+        # Calculate the new widget dimensions based on the scale factor
+        new_widget_width = int(old_widget_width * width_scale)
+        new_widget_height = int(old_widget_height * height_scale)
+
+        return new_widget_width, new_widget_height
+
+
+    @staticmethod
+    def get_screen_size():
+        bounds = shutil.get_terminal_size()
+        screen_width = bounds.columns
+        screen_height = bounds.lines
+        return (screen_width, screen_height)
+
 
     def on_resize(self) -> None:
-        self.styles.animate("offset", value=self.get_center(self.width, self.height), duration=1/6)
+        self.previous_screen_size = self.current_screen_size
+        self.current_screen_size = self.get_screen_size()
+
+    def watch_current_screen_size(self, current_screen_size: tuple):
+        pass
+
 
     def on_mount(self) -> None:
+        self.current_screen_size = self.get_screen_size()
         self.styles.width = 0
         self.styles.height = 0
         self.styles.animate("width", value=self.width, duration=1/6)
