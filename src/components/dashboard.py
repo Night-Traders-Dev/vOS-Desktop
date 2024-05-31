@@ -3,7 +3,7 @@ from textual.containers import Container, Vertical
 from textual.css.scalar import ScalarOffset, Scalar, Unit
 from textual.events import Click
 from textual.geometry import Offset, Region
-from textual.reactive import Reactive
+from textual.reactive import reactive
 from textual.widget import Widget
 from textual.widgets import Static
 from random import randint
@@ -69,10 +69,10 @@ class TitleText(Static):
 
 class Window(Vertical):
 
-    current_screen_size: Reactive[tuple] = Reactive((0, 0))
-    previous_screen_size: Reactive[tuple] = Reactive((0, 0))
-    current_window_size: Reactive[tuple] = Reactive((0, 0))
-    previous_window_size: Reactive[tuple] = Reactive((0, 0))
+    current_screen_size: reactive[tuple] = reactive((0, 0))
+    previous_screen_size: reactive[tuple] = reactive((0, 0))
+    current_window_size: reactive[tuple] = reactive((0, 0))
+    previous_window_size: reactive[tuple] = reactive((0, 0))
 
     DEFAULT_CSS = """
     Window {
@@ -129,18 +129,20 @@ class Window(Vertical):
 
     @staticmethod
     def calculate_new_dimensions(old_screen_size, new_screen_size, old_widget_size):
-        old_screen_width, old_screen_height = old_screen_size
-        new_screen_width, new_screen_height = new_screen_size
-        old_widget_width, old_widget_height = old_widget_size
+        try:
+            old_screen_width, old_screen_height = old_screen_size
+            new_screen_width, new_screen_height = new_screen_size
+            old_widget_width, old_widget_height = old_widget_size
 
-        width_scale = new_screen_width / old_screen_width
-        height_scale = new_screen_height / old_screen_height
+            width_scale = new_screen_width / old_screen_width
+            height_scale = new_screen_height / old_screen_height
 
-        new_widget_width = int(old_widget_width * width_scale)
-        new_widget_height = int(old_widget_height * height_scale)
+            new_widget_width = int(old_widget_width * width_scale)
+            new_widget_height = int(old_widget_height * height_scale)
 
-        return new_widget_width, new_widget_height
-
+            return new_widget_width, new_widget_height
+        except:
+            pass
 
     @staticmethod
     def get_screen_size():
@@ -149,12 +151,10 @@ class Window(Vertical):
         screen_height = bounds.lines
         return (screen_width, screen_height)
 
-    @staticmethod
-    def animation_logic():
-        pass
-        self.styles.animate("width", value=new_width, duration=1/6)
-        self.styles.animate("height", value=new_height, duration=1/6)
-        self.styles.animate("offset", value=self.get_center(new_width, new_height), duration=1/6)
+    def animation_logic(self, width, height, offset):
+        self.styles.animate("width", value=width, duration=1/6)
+        self.styles.animate("height", value=height, duration=1/6)
+        self.styles.animate("offset", value=offset, duration=1/6)
 
     def on_resize(self) -> None:
         self.previous_screen_size = self.current_screen_size
@@ -163,12 +163,11 @@ class Window(Vertical):
         self.current_window_size = self.size
 
     def watch_current_screen_size(self, current_screen_size: tuple):
-        if self.previous_screen_size == (0, 0):
-            self.previous_screen_size = self.current_screen_size
-        new_width, new_height = self.calculate_new_dimensions(self.previous_screen_size, self.current_screen_size, self.previous_window_size)
-        self.styles.animate("width", value=new_width, duration=1/6)
-        self.styles.animate("height", value=new_height, duration=1/6)
-        self.styles.animate("offset", value=self.get_center(new_width, new_height), duration=1/6)
+        try:
+            new_width, new_height = self.calculate_new_dimensions(self.previous_screen_size, self.current_screen_size, self.previous_window_size)
+            self.animation_logic(new_width, new_height, self.get_center(new_width, new_height))
+        except:
+            pass
 
     def on_mount(self) -> None:
         self.current_screen_size = self.get_screen_size()
@@ -176,9 +175,7 @@ class Window(Vertical):
         self.current_window_size = self.size
         self.styles.width = 0
         self.styles.height = 0
-        self.styles.animate("width", value=self.width, duration=1/6)
-        self.styles.animate("height", value=self.height, duration=1/6)
-        self.styles.animate("offset", value=self.get_center(self.width, self.height), duration=1/6)
+        self.animation_logic(self.width, self.height, self.get_center(self.width, self.height))
 
 
     def render(self) -> str:
