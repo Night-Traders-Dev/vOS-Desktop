@@ -43,10 +43,18 @@ class BarContainer(Container):
             y = 0
             self.is_maximized = True
         else:
+            screen_width = bounds.columns
+            screen_height = bounds.lines
             width = self.parent.width
             height = self.parent.height
-            x = 0
-            y = 0
+
+            center_x = screen_width // 2
+            center_y = screen_height // 2
+
+            center_x = center_x - (width // 2)
+            center_y = center_y - (height // 2)
+            x = center_x
+            y = center_y
             self.is_maximized = False
 
         self.parent.styles.animate("width", value=width, duration=1/6)
@@ -94,7 +102,7 @@ class Window(Vertical):
         dock: top;
         content-align: right top;
     }
-    #box {
+    Window .box {
         height: 1fr;
         width: 1fr;
         border: solid rgba(233, 84, 32, 0.2);
@@ -130,16 +138,11 @@ class Window(Vertical):
 
         title_text.update(f" [bold]{new_title}[/bold]")
 
-    async def _on_click(self, event: Click) -> None:
-        if isinstance(self.parent, Widget):
-            self.focus()
-            self.parent.move_child(self, after=-1)
-            return await super()._on_click(event)
-
     def compose(self) -> ComposeResult:
         with BarContainer(id="title-bar"):
             yield TitleText(f" [bold]{self.title}[/bold]", id="title")
-            yield Static("App One", id="box")
+        yield Static("App One", classes="box")
+        yield Static("App Two", classes="box")
 
 
 
