@@ -43,27 +43,11 @@ class BarContainer(Container):
             y = 0
             self.is_maximized = True
         else:
-            screen_width = bounds.columns
-            screen_height = bounds.lines
-            width = self.parent.width
-            height = self.parent.height
-
-            center_x = screen_width // 2
-            center_y = screen_height // 2
-
-            center_x = center_x - (width // 2)
-            center_y = center_y - (height // 2)
-            x = center_x
-            y = center_y
             self.is_maximized = False
 
-        self.parent.styles.animate("width", value=width, duration=1/6)
-        self.parent.styles.animate("height", value=height, duration=1/6)
-        new_offset = ScalarOffset(
-            Scalar(x, Unit(1), Unit(1)),
-            Scalar(y, Unit(1), Unit(1))
-        )
-        self.parent.styles.animate("offset", value=new_offset, duration=1/6)
+        self.parent.styles.animate("width", value=self.parent.width, duration=1/6)
+        self.parent.styles.animate("height", value=self.parent.height, duration=1/6)
+        self.parent.styles.animate("offset", value=Window.get_center(self.parent.width, self.parent.height), duration=1/6)
 
     def on_double_click(self, event: Click) -> None:
         if self.parent:
@@ -118,12 +102,33 @@ class Window(Vertical):
         self.title = title
         self.id = id
 
+    @staticmethod
+    def get_center(width, height) -> None:
+        bounds = shutil.get_terminal_size()
+        screen_width = bounds.columns
+        screen_height = bounds.lines
+        center_x = screen_width // 2
+        center_y = screen_height // 2
+        center_x = center_x - (width // 2)
+        center_y = center_y - (height // 2)
+
+        new_offset = ScalarOffset(
+            Scalar(center_x, Unit(1), Unit(1)),
+            Scalar(center_y, Unit(1), Unit(1))
+        )
+
+        return new_offset
+
+
+    def on_resize(self) -> None:
+        self.styles.animate("offset", value=self.get_center(self.width, self.height), duration=1/6)
 
     def on_mount(self) -> None:
         self.styles.width = 0
         self.styles.height = 0
         self.styles.animate("width", value=self.width, duration=1/6)
         self.styles.animate("height", value=self.height, duration=1/6)
+        self.styles.animate("offset", value=self.get_center(self.width, self.height), duration=1/6)
 
 
     def render(self) -> str:
