@@ -107,8 +107,8 @@ class Window(Vertical):
 
 
     def on_mount(self) -> None:
-#        self.styles.width = 0
-#        self.styles.height = 0
+        self.styles.width = 0
+        self.styles.height = 0
         self.styles.animate("width", value=self.width, duration=1/6)
         self.styles.animate("height", value=self.height, duration=1/6)
 
