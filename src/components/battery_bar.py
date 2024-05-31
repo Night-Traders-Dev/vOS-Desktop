@@ -73,7 +73,6 @@ class BatteryBar(ProgressBar):
             }
             """
 
-
     def on_mount(self) -> None:
         battery = get_battery_percentage()
         self.update(progress=battery)
