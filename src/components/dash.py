@@ -28,10 +28,10 @@ class DashButton(Static):
 
 
 class Dash(Static):
+
     def compose(self) -> ComposeResult:
         yield DashButton("\n", classes="dashapp")
 
-    # MouseMove Alternative
     def is_mouse_over_dash(
         self,
         mouse_x, mouse_y
@@ -42,21 +42,20 @@ class Dash(Static):
              and
              widget.y <= mouse_y <= widget.y + widget.height
              )
-
     def dash_animation(self, reveal: bool):
         if reveal:
             self.styles.animate("opacity", value=100.0, duration=1.5)
             self.dash_timer = 0
             self.update_clock()
-            self.dash_clock = self.set_interval(6, self.update_clock, repeat=1)
+            self.dash_clock = self.set_interval(6, self.update_clock)
         else:
             self.styles.animate("opacity", value=0.0, duration=0.5)
+            self.dash_clock.pause()
 
-
+    @staticmethod
     def get_dash_opacity(self):
         return self.opacity
 
-    # Dash Reveal Trigger
     @on(events.MouseEvent)
     def dash_thrigger(self, event: events.MouseEvent) -> None:
         dash_loc = self.region
@@ -72,12 +71,10 @@ class Dash(Static):
         else:
             if self.opacity == 100.0:
                 self.dash_animation(False)
-    # End Dash Reveal
 
-
+    @work(thread=True)
     def update_clock(self) -> None:
         if self.dash_timer == 3:
-            self.dash_clock.pause()
             self.dash_animation(False)
             self.dash_timer = 0
         else:
