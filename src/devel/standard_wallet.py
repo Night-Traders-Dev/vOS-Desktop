@@ -1,5 +1,6 @@
 from textual import on, work
 from textual.app import App, ComposeResult
+from textual.geometry import Region, Size
 from textual.widgets import Footer, Header, Label, Button, Input
 from textual.containers import Container, Vertical, Horizontal
 
@@ -8,19 +9,33 @@ WALLETS = {
     "QSE Wallet": {"balance": 1.234, "currency": "QSE"},
 }
 
-class CryptoWalletApp(App):
-    """An example of a simple crypto wallet interface."""
+class Wallet(App):
 
+    DEFAULT_CSS = """
+            Container #view_wallets {
+                dock: top;
+            }
+
+            Container #add_wallet {
+                dock: top;
+            }
+
+            Container #remove_wallet {
+                dock: top;
+            }
+
+            Container #transfer_funds {
+                dock: top;
+            }
+
+            Horizontal #nav {
+                dock: bottom;
+                content-align: center bottom;
+            }
+            """
 
     def compose(self) -> ComposeResult:
         """Compose app layout."""
-
-        # Navigation buttons
-        with Horizontal(id="nav"):
-            yield Button("View Wallets", id="view_wallets")
-            yield Button("Add Wallet", id="add_wallet")
-            yield Button("Remove Wallet", id="remove_wallet")
-            yield Button("Transfer Funds", id="transfer_funds")
 
         # Views container
         with Container(id="views"):
@@ -33,10 +48,17 @@ class CryptoWalletApp(App):
             with Container(id="transfer_funds"):
                 yield Vertical(id="transfer_view")
 
+
+        # Navigation buttons
+        with Horizontal(id="nav"):
+            yield Button("View Wallets", id="view_wallets")
+            yield Button("Add Wallet", id="add_wallet")
+            yield Button("Remove Wallet", id="remove_wallet")
+            yield Button("Transfer Funds", id="transfer_funds")
+
         self.nav_buttons = ["view_wallets", "add_wallet", "remove_wallet", "transfer_funds"]
         self.def_buttons = ["add_wallet_button", "remove_wallet_button", "transfer_button"]
 
-#    @work(thread=True)
     @on(Button.Pressed)
     async def button_handler(self, event: Button.Pressed) -> None:
         """Handle button press events."""
@@ -46,6 +68,8 @@ class CryptoWalletApp(App):
             if event.button.id == "add_wallet_button":
                 await self.add_wallet()
             elif event.button.id == "remove_wallet_button":
+                new_offset = self.query_one("#add_wallet", Container).offset
+                self.query_one("#remove_wallet", Container).offset = new_offset
                 await self.remove_wallet()
             elif event.button.id == "transfer_button":
                 await self.transfer_funds()
@@ -60,6 +84,10 @@ class CryptoWalletApp(App):
 
     def on_ready(self) -> None:
         self.switch_view("view_wallets")()
+#        width, height = self.query_one("#nav", Horizontal).size
+#        x, y = self.query_one("#nav", Horizontal).offset
+#        s_width, s_height = self.screen.size
+#        self.query_one("#nav", Horizontal).offset = (x, (y + (height / 2)))
 
     async def on_mount(self) -> None:
         """Handle app mount event."""
@@ -134,5 +162,5 @@ class CryptoWalletApp(App):
             container.mount(Label(f"{wallet_name}: {details['balance']} {details['currency']}"))
 
 if __name__ == "__main__":
-    app = CryptoWalletApp()
+    app = Wallet()
     app.run()
