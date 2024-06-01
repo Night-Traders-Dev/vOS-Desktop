@@ -18,7 +18,6 @@ class EnvironmentChecker:
     @staticmethod
     def is_proot():
         """Check if the environment is Proot."""
-        # A common indicator of Proot is the existence of the /usr/bin/env or /usr/bin/proot path
         proot_check = subprocess.run(['uname', '-a'], stdout=subprocess.PIPE, text=True).stdout
         return 'proot' in proot_check.lower()
 
