@@ -1,8 +1,10 @@
-from textual import on, work
+from textual import on, work, events
 from textual.app import App, ComposeResult
 from textual.geometry import Region, Size
 from textual.widgets import Footer, Header, Label, Button, Input
 from textual.containers import Container, Vertical, Horizontal
+import shutil
+
 
 # Mock data for the wallets
 WALLETS = {
@@ -12,6 +14,10 @@ WALLETS = {
 class Wallet(App):
 
     DEFAULT_CSS = """
+            Wallet {
+                layout: grid;
+                grid-size: 3 3;
+            }
             Container #view_wallets {
                 dock: top;
             }
@@ -28,9 +34,14 @@ class Wallet(App):
                 dock: top;
             }
 
-            Horizontal #nav {
+            Button {
+                width: 1fr;
+            }
+            .nav_button {
+                align: center top;
+                width: 100%;
+                height: auto;
                 dock: bottom;
-                content-align: center bottom;
             }
             """
 
@@ -50,14 +61,27 @@ class Wallet(App):
 
 
         # Navigation buttons
-        with Horizontal(id="nav"):
-            yield Button("View Wallets", id="view_wallets")
-            yield Button("Add Wallet", id="add_wallet")
-            yield Button("Remove Wallet", id="remove_wallet")
-            yield Button("Transfer Funds", id="transfer_funds")
+        yield Horizontal(
+            Button("View Wallets", id="view_wallets"),
+            Button("Add Wallet", id="add_wallet"),
+            Button("Remove Wallet", id="remove_wallet"),
+            Button("Transfer Funds", id="transfer_funds"),
+            classes="nav_button")
 
         self.nav_buttons = ["view_wallets", "add_wallet", "remove_wallet", "transfer_funds"]
         self.def_buttons = ["add_wallet_button", "remove_wallet_button", "transfer_button"]
+
+    def dock_nav(self) -> None:
+        bounds = shutil.get_terminal_size()
+        s_width = bounds.columns
+        s_height = bounds.lines
+        width, height = self.query_one("#nav", Horizontal).size
+        self.query_one("#nav", Horizontal).offset = (0, (s_height - (height * 1.1)))
+
+    @on(events.Resize)
+    def handle_buttons(self) -> None:
+        pass
+#        self.dock_nav()
 
     @on(Button.Pressed)
     async def button_handler(self, event: Button.Pressed) -> None:
@@ -84,10 +108,7 @@ class Wallet(App):
 
     def on_ready(self) -> None:
         self.switch_view("view_wallets")()
-#        width, height = self.query_one("#nav", Horizontal).size
-#        x, y = self.query_one("#nav", Horizontal).offset
-#        s_width, s_height = self.screen.size
-#        self.query_one("#nav", Horizontal).offset = (x, (y + (height / 2)))
+#        self.dock_nav()
 
     async def on_mount(self) -> None:
         """Handle app mount event."""
