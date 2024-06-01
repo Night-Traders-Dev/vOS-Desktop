@@ -22,6 +22,10 @@ class Wallet(App):
                 dock: top;
             }
 
+            #wallets_view {
+                align: center top;
+            }
+
             Container #add_wallet {
                 dock: top;
             }
