@@ -14,7 +14,7 @@ def get_battery_percentage():
             result = subprocess.run([termux_battery_status_path], stdout=subprocess.PIPE, text=True)
             battery_info = json.loads(result.stdout)
             return battery_info['percentage']
-        except Exception as e:
+        except:
             return "0"
     elif os_check.is_windows():
          """Retrieve the battery percentage on Windows."""
@@ -27,7 +27,7 @@ def get_battery_percentage():
                  if "EstimatedChargeRemaining" in line:
                      percentage = int(line.split()[-1])
                      return percentage
-         except Exception as e:
+         except:
              return "0"
     elif os_check.is_linux():
         try:
@@ -39,7 +39,7 @@ def get_battery_percentage():
                     if 'Battery' in line:
                         percentage = line.split(", ")[1].split("%")[0]
                         return int(percentage)
-        except Exception as e:
+        except:
             return "0"
     elif os_check.is_macos():
          try:
@@ -51,7 +51,7 @@ def get_battery_percentage():
                      if 'InternalBattery' in line:
                          percentage = line.split(';')[1].strip().split('%')[0]
                          return int(percentage)
-         except Exception as e:
+         except:
              return "0"
 
 

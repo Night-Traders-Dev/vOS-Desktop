@@ -30,10 +30,10 @@ class Image(Static):
 
 
 #class Test(App):
-
+#
 #    def compose(self) -> ComposeResult:
-#        yield Image("components/vos.jpg", (80, 60))
-
+#        yield Image("components/vos.jpg", (24, 24))
+#
 #if __name__ == "__main__":
 #    testapp = Test()
 #    testapp.run()

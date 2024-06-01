@@ -24,4 +24,5 @@ class Clock(Static):
 class TopBar(Static):
     def compose(self) -> ComposeResult:
         yield Clock(id="clock")
-        yield BatteryBar()
+        if os_check.is_android():
+            yield BatteryBar()
