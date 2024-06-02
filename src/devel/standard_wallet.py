@@ -155,9 +155,6 @@ class Wallet(App):
             except ValueError:
                 return
 
-#        if from_wallet in WALLETS and to_wallet in WALLETS and WALLETS[from_wallet]["balance"] >= amount:
-#            WALLETS[from_wallet]["balance"] -= amount
-#            WALLETS[to_wallet]["balance"] += amount
         if from_balance >= amount:
             WALLETS[from_wallet]["balance"] = from_balance - amount
             WALLETS[to_wallet]["balance"] = to_balance + amount
@@ -166,11 +163,17 @@ class Wallet(App):
         else:
             pass
 
+
     async def refresh_wallets_view(self) -> None:
         """Refresh the wallets view."""
         container = self.query_one("#wallets_view", Vertical)
         for wallet_name, details in WALLETS.items():
-            container.mount(Label(f"{wallet_name}: {details['balance']} {details['currency']}"))
+            label_id = f"wallet_{wallet_name}"
+            try:
+                label = self.query_one(f"#{label_id}", Label)
+                label.update(f"{wallet_name}: {details['balance']} {details['currency']}")
+            except:
+                container.mount(Label(f"{wallet_name}: {details['balance']} {details['currency']}", id=label_id))
 
 if __name__ == "__main__":
     app = Wallet()
