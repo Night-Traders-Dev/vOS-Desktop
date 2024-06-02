@@ -8,16 +8,12 @@ import shutil
 
 # Mock data for the wallets
 WALLETS = {
-    "QSE Wallet": {"balance": 1.234, "currency": "QSE"},
+    "QSE Wallet": {"balance": 0.0, "currency": "QSE"},
 }
 
 class Wallet(App):
 
     DEFAULT_CSS = """
-            Wallet {
-                layout: grid;
-                grid-size: 3 3;
-            }
             Container #view_wallets {
                 dock: top;
             }
@@ -40,10 +36,11 @@ class Wallet(App):
 
             .nav_button {
                 align: center top;
-                width: 100%;
+                width: auto;
                 height: auto;
                 dock: bottom;
             }
+
             """
 
     def compose(self) -> ComposeResult:
@@ -72,17 +69,6 @@ class Wallet(App):
         self.nav_buttons = ["view_wallets", "add_wallet", "remove_wallet", "transfer_funds"]
         self.def_buttons = ["add_wallet_button", "remove_wallet_button", "transfer_button"]
 
-    def dock_nav(self) -> None:
-        bounds = shutil.get_terminal_size()
-        s_width = bounds.columns
-        s_height = bounds.lines
-        self.query_one("#nav_container", Horizontal).styles.width = s_width
-
-    @on(events.Resize)
-    def handle_buttons(self) -> None:
-        """test"""
-        self.dock_nav()
-
     @on(Button.Pressed)
     async def button_handler(self, event: Button.Pressed) -> None:
         """Handle button press events."""
@@ -108,7 +94,6 @@ class Wallet(App):
 
     def on_ready(self) -> None:
         self.switch_view("view_wallets")()
-#        self.dock_nav()
 
     async def on_mount(self) -> None:
         """Handle app mount event."""
@@ -147,7 +132,8 @@ class Wallet(App):
             self.log("Invalid balance value.")
             return
         if wallet_name and wallet_name not in WALLETS:
-            WALLETS[wallet_name] = {"balance": initial_balance, "currency": "QSE"}
+            formatted_balance = f"{initial_balance:,.2f}"
+            WALLETS[wallet_name] = {"balance": formatted_balance, "currency": "QSE"}
             self.log(f"Added new wallet: {wallet_name} with balance {initial_balance} QSE")
             await self.refresh_wallets_view()
 
