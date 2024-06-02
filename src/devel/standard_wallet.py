@@ -38,9 +38,6 @@ class Wallet(App):
                 dock: top;
             }
 
-            Button {
-                width: 1fr;
-            }
             .nav_button {
                 align: center top;
                 width: 100%;
@@ -70,7 +67,7 @@ class Wallet(App):
             Button("Add Wallet", id="add_wallet"),
             Button("Remove Wallet", id="remove_wallet"),
             Button("Transfer Funds", id="transfer_funds"),
-            classes="nav_button")
+            id="nav_container", classes="nav_button")
 
         self.nav_buttons = ["view_wallets", "add_wallet", "remove_wallet", "transfer_funds"]
         self.def_buttons = ["add_wallet_button", "remove_wallet_button", "transfer_button"]
@@ -79,13 +76,12 @@ class Wallet(App):
         bounds = shutil.get_terminal_size()
         s_width = bounds.columns
         s_height = bounds.lines
-        width, height = self.query_one("#nav", Horizontal).size
-        self.query_one("#nav", Horizontal).offset = (0, (s_height - (height * 1.1)))
+        self.query_one("#nav_container", Horizontal).styles.width = s_width
 
     @on(events.Resize)
     def handle_buttons(self) -> None:
-        pass
-#        self.dock_nav()
+        """test"""
+        self.dock_nav()
 
     @on(Button.Pressed)
     async def button_handler(self, event: Button.Pressed) -> None:
