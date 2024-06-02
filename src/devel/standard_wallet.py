@@ -6,10 +6,7 @@ from textual.containers import Container, Vertical, Horizontal
 import shutil
 
 
-# Mock data for the wallets
-WALLETS = {
-    "QSE Wallet": {"balance": 0.0, "currency": "QSE"},
-}
+WALLETS = {}
 
 class Wallet(App):
 
@@ -129,12 +126,10 @@ class Wallet(App):
         try:
             initial_balance = float(self.query_one("#new_wallet_balance", Input).value)
         except ValueError:
-            self.log("Invalid balance value.")
             return
         if wallet_name and wallet_name not in WALLETS:
             formatted_balance = f"{initial_balance:,.2f}"
             WALLETS[wallet_name] = {"balance": formatted_balance, "currency": "QSE"}
-            self.log(f"Added new wallet: {wallet_name} with balance {initial_balance} QSE")
             await self.refresh_wallets_view()
 
     async def remove_wallet(self) -> None:
@@ -142,7 +137,6 @@ class Wallet(App):
         wallet_name = self.query_one("#remove_wallet_name", Input).value
         if wallet_name in WALLETS:
             del WALLETS[wallet_name]
-            self.log(f"Removed wallet: {wallet_name}")
             await self.refresh_wallets_view()
 
     async def transfer_funds(self) -> None:
@@ -152,15 +146,25 @@ class Wallet(App):
         try:
             amount = float(self.query_one("#transfer_amount", Input).value)
         except ValueError:
-            self.log("Invalid transfer amount.")
             return
-        if from_wallet in WALLETS and to_wallet in WALLETS and WALLETS[from_wallet]["balance"] >= amount:
-            WALLETS[from_wallet]["balance"] -= amount
-            WALLETS[to_wallet]["balance"] += amount
-            self.log(f"Transferred {amount} from {from_wallet} to {to_wallet}")
+
+        if from_wallet in WALLETS and to_wallet in WALLETS:
+            try:
+                from_balance = float(WALLETS[from_wallet]["balance"])
+                to_balance = float(WALLETS[to_wallet]["balance"])
+            except ValueError:
+                return
+
+#        if from_wallet in WALLETS and to_wallet in WALLETS and WALLETS[from_wallet]["balance"] >= amount:
+#            WALLETS[from_wallet]["balance"] -= amount
+#            WALLETS[to_wallet]["balance"] += amount
+        if from_balance >= amount:
+            WALLETS[from_wallet]["balance"] = from_balance - amount
+            WALLETS[to_wallet]["balance"] = to_balance + amount
+
             await self.refresh_wallets_view()
         else:
-            self.log("Invalid transfer operation.")
+            pass
 
     async def refresh_wallets_view(self) -> None:
         """Refresh the wallets view."""
