@@ -36,7 +36,14 @@ class Wallet(App):
                 width: auto;
                 height: auto;
                 dock: bottom;
-            }
+
+            &.-active {
+                background: $panel;
+                border-bottom: tall $panel-lighten-2;
+                border-top: tall $panel-darken-2;
+                tint: $background 1%;
+             }
+             }
 
             """
 
@@ -57,10 +64,9 @@ class Wallet(App):
 
         # Navigation buttons
         yield Horizontal(
-            Button("View Wallets", id="view_wallets"),
-            Button("Add Wallet", id="add_wallet"),
-            Button("Remove Wallet", id="remove_wallet"),
-            Button("Transfer Funds", id="transfer_funds"),
+            Button("Wallet", id="view_wallets"),
+            Button("Add", id="add_wallet"),
+            Button("Transfer", id="transfer_funds"),
             id="nav_container", classes="nav_button")
 
         self.nav_buttons = ["view_wallets", "add_wallet", "remove_wallet", "transfer_funds"]
@@ -162,7 +168,6 @@ class Wallet(App):
             await self.refresh_wallets_view()
         else:
             pass
-
 
     async def refresh_wallets_view(self) -> None:
         """Refresh the wallets view."""
