@@ -32,7 +32,7 @@ class IRCScreen(Screen):
     async def on_mount(self):
         self.message_history = []
         self.current_channel = '#qchat'
-        await self.start_client("71.29.176.68", 8001, self.nickname)
+        await self.start_client("174.130.213.190", 8001, self.nickname)
 
     async def handle_server(self, reader):
         try:
