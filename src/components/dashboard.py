@@ -67,6 +67,19 @@ class TitleText(Static):
         else:
             title_text.styles.content_align = ("right", "top")
 
+
+class TerminalApp(Static):
+
+    def on_click(self) -> None:
+        self.parent.styles.animate("opacity", value=0.0, duration=1/6, on_complete=self.parent.remove)
+        self.app.push_screen("TerminalScreen")
+
+class SettingsApp(Static):
+
+    def on_click(self) -> None:
+        self.parent.styles.animate("opacity", value=0.0, duration=1/6, on_complete=self.parent.remove)
+        self.app.push_screen("SettingsScreen")
+
 class Window(Vertical):
 
     current_screen_size: reactive[tuple] = reactive((0, 0))
@@ -95,7 +108,7 @@ class Window(Vertical):
         dock: top;
         content-align: right top;
     }
-    Window .box {
+    Window .dashbox {
         height: 1fr;
         width: 1fr;
         border: solid rgba(233, 84, 32, 0.2);
@@ -194,8 +207,8 @@ class Window(Vertical):
     def compose(self) -> ComposeResult:
         with BarContainer(id="title-bar"):
             yield TitleText(f" [bold]{self.title}[/bold]", id="title")
-        yield Static("App One", classes="box")
-        yield Static("App Two", classes="box")
+        yield TerminalApp("Terminal", classes="dashbox")
+        yield SettingsApp("Settings", classes="dashbox")
 
 
 
