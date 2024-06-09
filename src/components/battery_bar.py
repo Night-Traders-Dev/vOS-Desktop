@@ -78,8 +78,8 @@ class BatteryBar(ProgressBar):
         self.update(progress=battery)
         self.set_interval(10, self.update_battery)
 
-    @work(thread=True)
-    def update_battery(self) -> None:
+    @work(thread=True, exclusive=True)
+    async def update_battery(self) -> None:
         battery = get_battery_percentage()
         self.update(progress=battery)
 

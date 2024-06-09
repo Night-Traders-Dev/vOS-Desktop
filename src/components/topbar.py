@@ -16,7 +16,7 @@ class Clock(Static):
             clock = datetime.now().time()
             return (f"{clock:%T}")
 
-    @work(thread=True)
+    @work(thread=True, exclusive=True)
     def update_clock(self) -> None:
         clock = datetime.now().time()
         self.update(f"{clock:%T}")

@@ -38,9 +38,9 @@ class Desktop(App):
         "QChat": IRCScreen()
      }
 
-    @work
+    @work(exclusive=True)
     async def on_mount(self) -> None:
-        await self.push_screen_wait("LoginScreen")
+        self.push_screen("LoginScreen")
 
 if __name__ == "__main__":
     app = Desktop()
