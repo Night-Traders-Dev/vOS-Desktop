@@ -7,6 +7,8 @@ from textual.containers import Grid
 from textual.geometry import Region
 from textual.screen import Screen
 from textual import on, events, work
+from components.dashboard import Window
+
 
 class DashButton(Static):
     def render_line(self, y: int) -> Strip:
@@ -24,8 +26,13 @@ class DashButton(Static):
         return Strip([segment], len(line))
 
     def on_click(self):
-        self.app.push_screen("DashScreen")
-
+        try:
+            window = self.app.query_one("#dashboard_window")
+            if window:
+                return
+        except Exception as e:
+            pass
+        self.app.mount(Window(0, 0, 50, 20, "", "vOS Dashboard", "dashboard_window"))
 
 class Dash(Static):
 

@@ -80,7 +80,8 @@ class Window(Vertical):
         dock: left;
         layout: grid;
         grid-size: 3 3;
-        background: rgba(119, 41, 83, 0.75);
+/*        background: rgba(119, 41, 83, 0.75);*/
+        background: rgba(191, 189, 183, 0.08);
     }
      Window #title-bar {
         width: 100%;
