@@ -18,7 +18,13 @@ class DesktopBase(Screen):
         yield self.dash
         yield TopBar(id="topbar")
 
-
+    def on_click(self):
+        try:
+            window = self.query_one("#dashboard_window")
+            if window.styles.opacity != 0.0:
+                window.styles.animate("opacity", value=0.0, duration=1/6, on_complete=window.remove)
+        except:
+            pass
 
 class Desktop(App):
     CSS_PATH = "Desktop.tcss"
