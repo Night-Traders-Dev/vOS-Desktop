@@ -32,7 +32,7 @@ class DashButton(Static):
                 return
         except Exception as e:
             pass
-        self.app.mount(Window(0, 0, 50, 20, "", "vOS Dashboard", "dashboard_window"))
+        self.app.mount(Window(0, 0, 50, 20, "", "vOS Dashboard ", "dashboard_window"))
 
 class Dash(Static):
 

@@ -66,6 +66,7 @@ class TitleText(Static):
             title_text.styles.content_align = ("center", "top")
         else:
             title_text.styles.content_align = ("right", "top")
+            title_text.styles.margin = (0, 0, 0, 1)
 
 
 class TerminalApp(Static):
@@ -93,13 +94,12 @@ class Window(Vertical):
         dock: left;
         layout: grid;
         grid-size: 3 3;
-/*        background: rgba(119, 41, 83, 0.75);*/
-        background: rgba(191, 189, 183, 0.08);
+        background: rgba(51, 51, 51, 0.50);
     }
      Window #title-bar {
         width: 100%;
         height: 1.50;
-        background: rgba(51, 51, 51, 0.50);
+        background: rgba(51, 51, 51, 0.80);
         dock: top;
         layout: horizontal;
     }
@@ -107,6 +107,7 @@ class Window(Vertical):
     Window #title  {
         dock: top;
         content-align: right top;
+        margin-left: 1;
     }
     Window .dashbox {
         height: 1fr;
