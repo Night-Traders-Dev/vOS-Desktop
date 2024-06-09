@@ -16,7 +16,7 @@ LoadingIndicator {
 #dash {
     layout: grid;
     grid-size: 0 6;
-    background: rgb(44, 0, 30);
+    background: rgba(44, 0, 30, 0.7);
     opacity: 0.0;
     height: 1fr;
     width: 8;
