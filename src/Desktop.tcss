@@ -33,7 +33,7 @@ LoadingIndicator {
 #topbar {
     layout: vertical;
     align: center top;
-    background: rgb(51, 51, 51);
+    background: rgba(51, 51, 51, 0.6);
     height: 3;
     width: 1fr;
     dock: top;
@@ -42,7 +42,7 @@ LoadingIndicator {
 
 #clock {
     offset-y: 1;
-    background: rgb(51, 51, 51);   
+    background: rgba(51, 51, 51, 0.0);
     color: rgb(255, 255, 255);
     text-style: bold;
     dock: top;
@@ -58,23 +58,6 @@ BatteryBar {
     layer: three;
 }
 
-DashScreen {
-    background: rgba(191, 189, 183, 0.08);
-    layout: grid;
-    grid-size: 3 3;
-    height: 3fr;
-    width: 3fr;
-    layer: one;
-}
-
-.box {
-    height: 1fr;
-    width: 1fr;
-    border: solid rgba(233, 84, 32, 0.2);
-    layer: one;
-    opacity: 0.0;
-
-}
 
 #settings {
     opacity: 100.0;
