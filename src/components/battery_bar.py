@@ -74,6 +74,41 @@ class BatteryBar(ProgressBar):
             }
             """
 
+    def update_bars(self):
+        # Calculate the number of circles to display based on the percentage
+        num_bars = int(self..progress / 10)
+        filled_bars = ""
+        for i in range(num_bars):
+            # Calculate the gradient color using hexadecimal color codes
+            start_color = "#cba6f7"  # Start color (dark blue)
+            end_color = "#94e2d5"  # End color (light green)
+            color_code = self.interpolate_color(start_color, end_color, i, num_bars)
+            filled_bars += f"[b {color_code}]■[/]"
+        empty_bars = "[b gray]■[/]" * (10 - num_bars)
+        self.border_subtitle += f" {filled_bars}{empty_bars}"
+
+    def interpolate_color(self, start_color, end_color, current_step, total_steps):
+        # Helper function to interpolate between two colors based on the current step and total steps
+        start_r, start_g, start_b = self.hex_to_rgb(start_color)
+        end_r, end_g, end_b = self.hex_to_rgb(end_color)
+        r = int(start_r + (end_r - start_r) * current_step / total_steps)
+        g = int(start_g + (end_g - start_g) * current_step / total_steps)
+        b = int(start_b + (end_b - start_b) * current_step / total_steps)
+        return f"#{self.rgb_to_hex(r, g, b)}"
+
+    def hex_to_rgb(self, hex_color):
+        # Helper function to convert a hexadecimal color code to RGB values
+        hex_color = hex_color.lstrip("#")
+        r = int(hex_color[0:2], 16)
+        g = int(hex_color[2:4], 16)
+        b = int(hex_color[4:6], 16)
+        return r, g, b
+
+    def rgb_to_hex(self, r, g, b):
+        # Helper function to convert RGB values to a hexadecimal color code
+        hex_color = f"{r:02x}{g:02x}{b:02x}"
+        return hex_color
+
     def update_circles(self):
         # Calculate the number of circles to display based on the percentage
         num_circles = int(self.progress / 10)
