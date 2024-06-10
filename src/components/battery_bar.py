@@ -76,7 +76,7 @@ class BatteryBar(ProgressBar):
 
     def update_bars(self):
         # Calculate the number of circles to display based on the percentage
-        num_bars = int(self..progress / 10)
+        num_bars = int(self.progress / 10)
         filled_bars = ""
         for i in range(num_bars):
             # Calculate the gradient color using hexadecimal color codes
