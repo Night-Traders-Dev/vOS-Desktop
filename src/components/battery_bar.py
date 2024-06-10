@@ -2,6 +2,7 @@ from textual.widgets import ProgressBar
 from textual import on, work
 import os
 import subprocess
+from subprocess import Popen
 import json
 from components.os_check import EnvironmentChecker as os_check
 
@@ -72,6 +73,13 @@ class BatteryBar(ProgressBar):
                 width: 4;
             }
             """
+
+    def update_circles(self):
+        # Calculate the number of circles to display based on the percentage
+        num_circles = int(self.progress / 10)
+        filled_circles = "[b #74c7ec]•[/]" * num_circles
+        empty_circles = "[b gray]•[/]" * (10 - num_circles)
+        self.border_subtitle += f" {filled_circles}{empty_circles}"
 
     def on_mount(self) -> None:
         battery = get_battery_percentage()
