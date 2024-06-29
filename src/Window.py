@@ -1,5 +1,5 @@
 from textual.app import App
-from components.dashboard import Window
+from components.windows import Window
 
 
 id = "dashboard_window"
