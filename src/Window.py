@@ -2,10 +2,11 @@ from textual.app import App
 from components.windows import Window
 
 
-id = "dashboard_window"
-title = "vOS Dashboard"
+id = "test_window"
+title = "Test Window"
+label = "Hello World!"
 
-class Dashboard(App[None]):
+class TestWindow(App[None]):
     def on_ready(self) -> None:
         try:
             window = self.query_one(f"#[id]")
@@ -14,7 +15,16 @@ class Dashboard(App[None]):
         except Exception as e:
             pass
 
-        self.mount(Window(0, 0, 50, 20, "", title, id))
+        self.mount(
+            Window(
+                x=0,
+                y=0,
+                width=50,
+                height=20,
+                label=label,
+                title=title,
+                id=id
+        ))
 
 if __name__ == "__main__":
-    Dashboard().run()
+    TestWindow().run()
