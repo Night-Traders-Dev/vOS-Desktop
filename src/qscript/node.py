@@ -1,3 +1,4 @@
+from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Vertical, Horizontal
 from textual.widgets import Button, Static, Input
@@ -32,65 +33,123 @@ class Node(Static):
 
 class VisualPythonApp(App):
     selected_node: reactive[str | None] = reactive(None)
-    nodes: reactive[list[Node]] = reactive([])
+    nodes: reactive[list[tuple[Node, Input | None]]] = reactive([])
 
     def compose(self) -> ComposeResult:
         with Vertical():
             with Horizontal():
                 yield Button(label="Add Variable Node", name="add_variable_node_button")
                 yield Button(label="Add Print Node", name="add_print_node_button")
+                yield Button(label="Add Addition Node", name="add_addition_node_button")
                 yield Button(label="Connect Nodes", name="connect_nodes_button")
                 yield Button(label="Execute", name="execute_button")
+                yield Button(label="Clear Nodes", name="clear_nodes_button")
                 yield Button(label="Quit", name="quit_button")
             yield Vertical(id="node_container")
             yield Static("Selected Node: None", id="selected_node_display")
             yield Static("", id="connection_status")
+            yield Static("Execution Result: None", id="execution_result")
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    @on(Button.Pressed)
+    def handle_button_press(self, event: Button.Pressed) -> None:
         if event.button.name == "add_variable_node_button":
-            self.add_node("Variable", "x = 10")
+            self.add_variable_node()
         elif event.button.name == "add_print_node_button":
             self.add_node("Print", "print(x)")
+        elif event.button.name == "add_addition_node_button":
+            self.add_node("Addition", "result = x + y")
         elif event.button.name == "connect_nodes_button":
             self.connect_nodes()
         elif event.button.name == "execute_button":
             self.execute_code()
+        elif event.button.name == "clear_nodes_button":
+            self.clear_nodes()
         elif event.button.name == "quit_button":
             self.exit()
 
+    def add_variable_node(self) -> None:
+        node_label = f"Node{len(self.nodes) + 1}"
+        code = f"{node_label.lower()} = "
+        node = Node(label=node_label, node_type="Variable", code=code)
+        node_container = self.query_one("#node_container", Vertical)
+        input_widget = Input(placeholder="Enter value", id=f"{node_label.lower()}_input")
+        node_container.mount(node)
+        node_container.mount(input_widget)
+        self.nodes.append((node, input_widget))
+
     def add_node(self, node_type: str, code: str) -> None:
-        node_label = f"Node {len(self.nodes) + 1}"
+        node_label = f"Node{len(self.nodes) + 1}"
         node = Node(label=node_label, node_type=node_type, code=code)
         node_container = self.query_one("#node_container", Vertical)
         node_container.mount(node)
-        self.nodes.append(node)
+        self.nodes.append((node, None))
 
     def connect_nodes(self) -> None:
         if len(self.nodes) >= 2:
-            self.nodes[-2].add_connection(self.nodes[-1])
+            self.nodes[-2][0].add_connection(self.nodes[-1][0])
             connection_status = self.query_one("#connection_status", Static)
-            connection_status.update(f"Connected {self.nodes[-2].label} to {self.nodes[-1].label}")
+            connection_status.update(f"Connected {self.nodes[-2][0].label} to {self.nodes[-1][0].label}")
 
-    def on_node_selected(self, message: Node.Selected) -> None:
+    @on(Node.Selected)
+    def node_selected(self, message: Node.Selected) -> None:
         self.selected_node = message.node.label
 
     def watch_selected_node(self, selected_node: str) -> None:
         selected_node_display = self.query_one("#selected_node_display", Static)
         selected_node_display.update(f"Selected Node: {selected_node}")
 
+    @on(Input.Submitted)
+    def store_variable_value(self, event: Input.Submitted) -> None:
+        node_name = event.input.id.replace("_input", "")
+        for node, input_widget in self.nodes:
+            if node.label.lower() == node_name:
+                node.code += event.input.value
+                node.refresh()
+
     def execute_code(self) -> None:
         code = self.generate_code()
-        exec(code, globals(), locals())
-        for node in self.nodes:
-            if node.node_type == "Print":
-                node.result = eval(node.code.split('(')[1][:-1])
+        local_vars = {}
+        try:
+            exec(code, globals(), local_vars)
+            for node, input_widget in self.nodes:
+                if node.node_type == "Print":
+                    node.result = str(eval(node.code.split('(')[1][:-1], globals(), local_vars))
+                elif input_widget is not None:
+                    node.result = local_vars.get(node.label.lower())
+                elif node.node_type == "Addition":
+                    node.result = local_vars.get('result')
+        except Exception as e:
+            for node, _ in self.nodes:
+                node.result = str(e)
+        
+        execution_result = self.query_one("#execution_result", Static)
+        execution_result.update(f"Execution Result: {local_vars}")
         self.refresh()
 
     def generate_code(self) -> str:
         code_segments = []
-        for node in self.nodes:
-            code_segments.append(node.code)
+        variable_map = {}
+        addition_code = ""
+        for node, input_widget in self.nodes:
+            if node.node_type == "Variable":
+                code_segments.append(node.code)
+                variable_map[node.label.lower()] = node.code.split('= ')[1]
+            elif node.node_type == "Addition":
+                addition_code = node.code.replace("x", list(variable_map.keys())[0]).replace("y", list(variable_map.keys())[1])
+                code_segments.append(addition_code)
         return "\n".join(code_segments)
+
+    def clear_nodes(self) -> None:
+        node_container = self.query_one("#node_container", Vertical)
+        node_container.clear()
+        self.nodes.clear()
+        connection_status = self.query_one("#connection_status", Static)
+        connection_status.update("")
+        execution_result = self.query_one("#execution_result", Static)
+        execution_result.update("Execution Result: None")
+        selected_node_display = self.query_one("#selected_node_display", Static)
+        selected_node_display.update("Selected Node: None")
+        self.refresh()
 
 if __name__ == "__main__":
     app = VisualPythonApp()
