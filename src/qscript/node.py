@@ -103,7 +103,11 @@ class VisualPythonApp(App):
         node_name = event.input.id.replace("_input", "")
         for node, input_widget in self.nodes:
             if node.label.lower() == node_name:
-                node.code += event.input.value
+                try:
+                    value = int(event.input.value)
+                except ValueError:
+                    value = event.input.value  # Fall back to string if conversion fails
+                node.code += repr(value)
                 node.refresh()
 
     def execute_code(self) -> None:
@@ -113,7 +117,10 @@ class VisualPythonApp(App):
             exec(code, globals(), local_vars)
             for node, input_widget in self.nodes:
                 if node.node_type == "Print":
-                    node.result = str(eval(node.code.split('(')[1][:-1], globals(), local_vars))
+                    if isinstance(local_vars.get(node.label.lower()), str):
+                        node.result = local_vars.get(node.label.lower())
+                    else:
+                        node.result = str(local_vars.get(node.code.split('(')[1][:-1], globals(), local_vars))
                 elif input_widget is not None:
                     node.result = local_vars.get(node.label.lower())
                 elif node.node_type == "Addition":
