@@ -52,7 +52,8 @@ class VisualPythonApp(App):
                 yield Static("Selected Node: None", id="selected_node_display")
                 yield Static("", id="connection_status")
                 yield Static("Execution Result: None", id="execution_result")
-            yield Vertical(id="node_container")                                                       yield Footer()
+            yield Vertical(id="node_container")
+        yield Footer()
 
     def action_add_variable_node(self) -> None:
         self.add_variable_node()
@@ -84,6 +85,7 @@ class VisualPythonApp(App):
         node_container.mount(node)
         node_container.mount(input_widget)
         self.nodes.append((node, input_widget))
+        self.post_message(Node.Selected(node))  # Select the node when created
         input_widget.focus()
 
     def add_node(self, node_type: str, code: str) -> None:
@@ -92,6 +94,7 @@ class VisualPythonApp(App):
         node_container = self.query_one("#node_container", Vertical)
         node_container.mount(node)
         self.nodes.append((node, None))
+        self.post_message(Node.Selected(node))  # Select the node when created
 
     def connect_nodes(self) -> None:
         if len(self.nodes) >= 2:
@@ -120,6 +123,7 @@ class VisualPythonApp(App):
                 node.code += repr(value)
                 node.refresh()
                 input_widget.blur()
+                self.post_message(Node.Selected(node))  # Re-select the node after input submission
 
     def execute_code(self) -> None:
         code = self.generate_code()
@@ -160,8 +164,13 @@ class VisualPythonApp(App):
 
     def clear_nodes(self) -> None:
         node_container = self.query_one("#node_container", Vertical)
-        node_container.clear()
+        node_container.remove()
         self.nodes.clear()
+
+        # Recreate the node container
+        new_node_container = Vertical(id="node_container")
+        self.mount(new_node_container)
+
         connection_status = self.query_one("#connection_status", Static)
         connection_status.update("")
         execution_result = self.query_one("#execution_result", Static)
