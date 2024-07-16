@@ -57,7 +57,7 @@ class VisualPythonApp(App):
         elif event.button.name == "add_print_node_button":
             self.add_node("Print", "print(x)")
         elif event.button.name == "add_addition_node_button":
-            self.add_node("Addition", "result = x + y")
+            self.add_node("Addition", "result = sum(values)")
         elif event.button.name == "connect_nodes_button":
             self.connect_nodes()
         elif event.button.name == "execute_button":
@@ -135,7 +135,8 @@ class VisualPythonApp(App):
                 code_segments.append(node.code)
                 variable_map[node.label.lower()] = node.code.split('= ')[1]
             elif node.node_type == "Addition":
-                addition_code = node.code.replace("x", list(variable_map.keys())[0]).replace("y", list(variable_map.keys())[1])
+                values = [variable_map[var] for var in variable_map.keys()]
+                addition_code = f"values = [{', '.join(values)}]\nresult = sum(values)"
                 code_segments.append(addition_code)
         return "\n".join(code_segments)
 
