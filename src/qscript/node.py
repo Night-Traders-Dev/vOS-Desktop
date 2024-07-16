@@ -1,10 +1,16 @@
+from __future__ import annotations
+from functools import partial
+from pathlib import Path
+
 from textual import on
 from textual.app import App, ComposeResult
-from textual.containers import Vertical, Horizontal
-from textual.widgets import Static, Input, Footer
+from textual.command import Hit, Hits, Provider
+from textual.containers import Vertical, Horizontal, VerticalScroll
+from textual.widgets import Static, Input, Header
 from textual.reactive import reactive
 from textual.message import Message
 from textual.binding import Binding
+
 
 class Node(Static):
     class Selected(Message):
@@ -24,7 +30,6 @@ class Node(Static):
     def render(self) -> str:
         result_str = f"\nResult: {self.result}" if self.result is not None else ""
         return f"[ {self.label} ({self.node_type}) ]\nCode: {self.code}{result_str}"
-
     def on_click(self) -> None:
         self.post_message(self.Selected(self))
 
@@ -32,16 +37,44 @@ class Node(Static):
         if node not in self.connections:
             self.connections.append(node)
 
-class VisualPythonApp(App):
-    BINDINGS = [
-        Binding(key="v", action="add_variable_node", description="Add Variable Node"),
-        Binding(key="p", action="add_print_node", description="Add Print Node"),
-        Binding(key="a", action="add_addition_node", description="Add Addition Node"),
-        Binding(key="c", action="connect_nodes", description="Connect Nodes"),
-        Binding(key="e", action="execute_code", description="Execute Code"),
-        Binding(key="r", action="clear_nodes", description="Clear Nodes"),
-        Binding(key="q", action="quit", description="Quit the App"),
-    ]
+
+class CommandProvider(Provider):
+    """Command provider for QScriptNodes commands."""
+
+    async def startup(self) -> None:
+        """Called once when the command palette is opened, prior to searching."""
+        self.commands = [
+            "add_variable_node",
+            "add_print_node",
+            "add_addition_node",
+            "add_subtraction_node",
+            "add_multiplication_node",
+            "add_division_node",
+            "connect_nodes",
+            "execute_code",
+            "clear_nodes",
+        ]
+
+    async def search(self, query: str) -> Hits:
+        """Search for commands."""
+        matcher = self.matcher(query)
+
+        app = self.app
+        assert isinstance(app, QScriptNodes)
+
+        for command in self.commands:
+            score = matcher.match(command)
+            if score > 0:
+                yield Hit(
+                    score,
+                    matcher.highlight(command),
+                    partial(app.run_command, command),
+                    help=f"Run {command.replace('_', ' ')}",
+                )
+
+
+class QScriptNodes(App):
+    COMMANDS = App.COMMANDS | {CommandProvider}
 
     selected_node: reactive[str | None] = reactive(None)
     nodes: reactive[list[tuple[Node, Input | None]]] = reactive([])
@@ -53,28 +86,13 @@ class VisualPythonApp(App):
                 yield Static("", id="connection_status")
                 yield Static("Execution Result: None", id="execution_result")
             yield Vertical(id="node_container")
-        yield Footer()
+        with VerticalScroll():
+            yield Static(id="command_output", expand=True)
+        yield Header()
 
-    def action_add_variable_node(self) -> None:
-        self.add_variable_node()
-
-    def action_add_print_node(self) -> None:
-        self.add_node("Print", "print(x)")
-
-    def action_add_addition_node(self) -> None:
-        self.add_node("Addition", "result = sum(values)")
-
-    def action_connect_nodes(self) -> None:
-        self.connect_nodes()
-
-    def action_execute_code(self) -> None:
-        self.execute_code()
-
-    def action_clear_nodes(self) -> None:
-        self.clear_nodes()
-
-    def action_quit(self) -> None:
-        self.exit()
+    def run_command(self, command: str) -> None:
+        """Run a command by its name."""
+        getattr(self, command)()
 
     def add_variable_node(self) -> None:
         node_label = f"Node{len(self.nodes) + 1}"
@@ -87,6 +105,21 @@ class VisualPythonApp(App):
         self.nodes.append((node, input_widget))
         self.post_message(Node.Selected(node))  # Select the node when created
         input_widget.focus()
+
+    def add_print_node(self) -> None:
+        self.add_node("Print", "print(x)")
+
+    def add_addition_node(self) -> None:
+        self.add_node("Addition", "result = sum(values)")
+
+    def add_subtraction_node(self) -> None:
+        self.add_node("Subtraction", "result = values[0] - sum(values[1:])")
+
+    def add_multiplication_node(self) -> None:
+        self.add_node("Multiplication", "result = 1\nfor v in values:\n    result *= v")
+
+    def add_division_node(self) -> None:
+        self.add_node("Division", "result = values[0]\nfor v in values[1:]:\n    result /= v")
 
     def add_node(self, node_type: str, code: str) -> None:
         node_label = f"Node{len(self.nodes) + 1}"
@@ -136,7 +169,7 @@ class VisualPythonApp(App):
                     node.result = local_vars.get(variable_name, "Undefined")
                 elif input_widget is not None:
                     node.result = local_vars.get(node.label.lower())
-                elif node.node_type == "Addition":
+                elif node.node_type in ["Addition", "Subtraction", "Multiplication", "Division"]:
                     node.result = local_vars.get('result')
         except Exception as e:
             for node, _ in self.nodes:
@@ -151,26 +184,28 @@ class VisualPythonApp(App):
     def generate_code(self) -> str:
         code_segments = []
         variable_map = {}
-        addition_code = ""
         for node, input_widget in self.nodes:
             if node.node_type == "Variable":
                 code_segments.append(node.code)
                 variable_map[node.label.lower()] = node.code.split('= ')[1]
             elif node.node_type == "Addition":
                 values = [variable_map[var] for var in variable_map.keys()]
-                addition_code = f"values = [{', '.join(values)}]\nresult = sum(values)"
-                code_segments.append(addition_code)
+                code_segments.append(f"values = [{', '.join(values)}]\nresult = sum(values)")
+            elif node.node_type == "Subtraction":
+                values = [variable_map[var] for var in variable_map.keys()]
+                code_segments.append(f"values = [{', '.join(values)}]\nresult = values[0] - sum(values[1:])")
+            elif node.node_type == "Multiplication":
+                values = [variable_map[var] for var in variable_map.keys()]
+                code_segments.append(f"values = [{', '.join(values)}]\nresult = 1\nfor v in values:\n    result *= v")
+            elif node.node_type == "Division":
+                values = [variable_map[var] for var in variable_map.keys()]
+                code_segments.append(f"values = [{', '.join(values)}]\nresult = values[0]\nfor v in values[1:]:\n    result /= v")
         return "\n".join(code_segments)
 
     def clear_nodes(self) -> None:
         node_container = self.query_one("#node_container", Vertical)
-        node_container.remove()
+        node_container.clear()
         self.nodes.clear()
-
-        # Recreate the node container
-        new_node_container = Vertical(id="node_container")
-        self.mount(new_node_container)
-
         connection_status = self.query_one("#connection_status", Static)
         connection_status.update("")
         execution_result = self.query_one("#execution_result", Static)
@@ -179,6 +214,7 @@ class VisualPythonApp(App):
         selected_node_display.update("Selected Node: None")
         self.refresh()
 
+
 if __name__ == "__main__":
-    app = VisualPythonApp()
+    app = QScriptNodes()
     app.run()
