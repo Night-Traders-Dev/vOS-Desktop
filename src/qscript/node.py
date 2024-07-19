@@ -1,15 +1,27 @@
 from __future__ import annotations
 from functools import partial
-from pathlib import Path
 
 from textual import on
 from textual.app import App, ComposeResult
 from textual.command import Hit, Hits, Provider
 from textual.containers import Vertical, Horizontal, VerticalScroll
-from textual.widgets import Static, Input, Header
+from textual.widgets import Static, Input, Header, TextArea
 from textual.reactive import reactive
 from textual.message import Message
 from textual.binding import Binding
+
+
+class NodeInput(Input):
+    """Input"""
+    def __init__(
+        self,
+        value="",
+        id=None,
+        placeholder="",
+        password=False,
+    ):
+        super().__init__()
+        self.placeholder = "Node Input"
 
 
 class Node(Static):
@@ -89,6 +101,8 @@ class QScriptNodes(App):
         with VerticalScroll():
             yield Static(id="command_output", expand=True)
         yield Header()
+        yield TextArea(read_only=True)
+#        yield NodeInput()
 
     def run_command(self, command: str) -> None:
         """Run a command by its name."""
@@ -100,7 +114,8 @@ class QScriptNodes(App):
         node = Node(label=node_label, node_type="Variable", code=code)
         node_container = self.query_one("#node_container", Vertical)
         input_widget = Input(placeholder="Enter value", id=f"{node_label.lower()}_input")
-        node_container.mount(node)
+        output = self.query_one(TextArea)
+        output.insert(f"node={node_label}, node_type=Variable\n")
         node_container.mount(input_widget)
         self.nodes.append((node, input_widget))
         self.post_message(Node.Selected(node))  # Select the node when created
@@ -125,16 +140,16 @@ class QScriptNodes(App):
         node_label = f"Node{len(self.nodes) + 1}"
         node = Node(label=node_label, node_type=node_type, code=code)
         node_container = self.query_one("#node_container", Vertical)
-        node_container.mount(node)
+        output = self.query_one(TextArea)
+        output.insert(f"node={node_label}, node_type=Variable, code={code}\n")
         self.nodes.append((node, None))
         self.post_message(Node.Selected(node))  # Select the node when created
 
     def connect_nodes(self) -> None:
         if len(self.nodes) >= 2:
             self.nodes[-2][0].add_connection(self.nodes[-1][0])
-            connection_status = self.query_one("#connection_status", Static)
-            connection_status.update(f"Connected {self.nodes[-2][0].label} to {self.nodes[-1][0].label}")
-            self.notify(f"Connected {self.nodes[-2][0].label} to {self.nodes[-1][0].label}")
+            output = self.query_one(TextArea)
+            output.insert(f"Connected {self.nodes[-2][0].label} to {self.nodes[-1][0].label}\n")
 
     @on(Node.Selected)
     def node_selected(self, message: Node.Selected) -> None:
@@ -155,8 +170,8 @@ class QScriptNodes(App):
                     value = event.input.value  # Fall back to string if conversion fails
                 node.code += repr(value)
                 node.refresh()
-                input_widget.blur()
                 self.post_message(Node.Selected(node))  # Re-select the node after input submission
+                input_widget.remove()
 
     def execute_code(self) -> None:
         code = self.generate_code()
@@ -177,8 +192,8 @@ class QScriptNodes(App):
                 self.notify(str(e))
 
         execution_result = self.query_one("#execution_result", Static)
-        execution_result.update(f"Execution Result: {local_vars}")
-        self.notify(f"Execution Result: {local_vars}")
+        output = self.query_one(TextArea)
+        output.insert(f"Execution Result: {local_vars}\n")
         self.refresh()
 
     def generate_code(self) -> str:
@@ -203,8 +218,6 @@ class QScriptNodes(App):
         return "\n".join(code_segments)
 
     def clear_nodes(self) -> None:
-        node_container = self.query_one("#node_container", Vertical)
-        node_container.clear()
         self.nodes.clear()
         connection_status = self.query_one("#connection_status", Static)
         connection_status.update("")

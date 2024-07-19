@@ -1,0 +1,10 @@
+QScriptNodes {
+    layers: one two three four;
+    background: rgb(94, 39, 80);
+    layout: grid;
+    grid-rows: 1fr 9fr;
+    grid-columns: 1fr 9fr;
+    width: 1fr;
+    height: 1fr;
+    layer: one;
+}
