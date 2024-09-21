@@ -11,8 +11,8 @@ class TestWindow(App[None]):
             Window(
                 x=0,
                 y=0,
-                width=50,
-                height=20,
+                width=25,
+                height=10,
                 label=label,
                 title=title,
                 id=id

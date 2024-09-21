@@ -53,13 +53,13 @@ class DesktopBase(Screen):
 class Desktop(App):
     CSS_PATH = "Desktop.tcss"
     SCREENS = {
-        "DesktopBase": DesktopBase(),
-        "DashScreen": DashScreen(),
-        "SettingsScreen": SettingsScreen(),
-        "ScreenSaver": ScreenSaver(),
-        "TerminalScreen": TerminalScreen(),
-        "LoginScreen": LoginScreen(),
-        "QChat": IRCScreen()
+        "DesktopBase": DesktopBase,
+        "DashScreen": DashScreen,
+        "SettingsScreen": SettingsScreen,
+        "ScreenSaver": ScreenSaver,
+        "TerminalScreen": TerminalScreen,
+        "LoginScreen": LoginScreen,
+        "QChat": IRCScreen
      }
 
     def compose(self) -> ComposeResult:
