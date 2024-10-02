@@ -18,7 +18,7 @@ class BarContainer(Container):
         super().__init__(*args, **kwargs)
         self.last_click_time = 0
         self.double_click_threshold = 0.3
-        self.is_maximized = False
+        self.is_max = False
         self.resize_timer = None
 
     def on_click(self, event: Click) -> None:
@@ -36,7 +36,7 @@ class BarContainer(Container):
     def on_single_click(self) -> None:
         bounds = shutil.get_terminal_size()
 
-        if not self.is_maximized:
+        if not self.is_max:
             width = bounds.columns
             height = bounds.lines
             x = 0
@@ -44,12 +44,12 @@ class BarContainer(Container):
             self.parent.styles.animate("width", value=width, duration=1/6)
             self.parent.styles.animate("height", value=height, duration=1/6)
             self.parent.styles.animate("offset", value=Window.get_center(width, height), duration=1/6)
-            self.is_maximized = True
+            self.is_max = True
         else:
             self.parent.styles.animate("width", value=50, duration=1/6)
             self.parent.styles.animate("height", value=20, duration=1/6)
             self.parent.styles.animate("offset", value=Window.get_center(50, 20), duration=1/6)
-            self.is_maximized = False
+            self.is_max = False
 
 
     def on_double_click(self, event: Click) -> None:
@@ -62,7 +62,7 @@ class TitleText(Static):
         bounds = shutil.get_terminal_size()
         title_bar = self.parent.parent.query_one("#title-bar")
         title_text = title_bar.query_one("#title")
-        if title_bar.is_maximized:
+        if title_bar.is_max:
             title_text.styles.content_align = ("center", "top")
         else:
             title_text.styles.content_align = ("right", "top")
